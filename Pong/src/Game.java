@@ -27,7 +27,6 @@ public class Game extends GameState {
 		Resources.addTexture("Paddle", "res/Paddle.png");
 		Resources.addTexture("Ball", "res/Ball.png");
 		Resources.addTexture("Digits", "res/Digits.png");
-		Resources.addFont("NES", "res/NESCyrillic.ttf", 60);
 		
 		paddles[0] = EntityFactory.createPaddle(32, 200);
 		paddles[1] = EntityFactory.createPaddle(400-32, 200);
@@ -100,12 +99,10 @@ public class Game extends GameState {
 		}
 		
 		// Wall Collision
-		if (tb.position.y >= 400) {
+		if (tb.position.y <= 0 || tb.position.y >= 400) {
 			vb.velocity.y *= -1;
 		}
-		if (tb.position.y <= 0) {
-			vb.velocity.y *= -1;
-		}
+
 		// Win Condition
 		if (tb.position.x >= 400) {
 			playerOneScore += 1;

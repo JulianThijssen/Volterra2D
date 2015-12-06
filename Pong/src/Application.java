@@ -1,6 +1,7 @@
 import graphics.nim.volterra.BaseGame;
 import graphics.nim.volterra.Canvas;
 import graphics.nim.volterra.GameState;
+import graphics.nim.volterra.Resources;
 import graphics.nim.volterra.input.Input;
 import graphics.nim.volterra.input.KeyListener;
 
@@ -18,6 +19,8 @@ public class Application extends BaseGame implements KeyListener {
 		
 		setTitle("Pong");
 		setResolution(400, 400);
+		
+		Resources.addFont("NES", "res/NESCyrillic.ttf", 60);
 	}
 
 	@Override

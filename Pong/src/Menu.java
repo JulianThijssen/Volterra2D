@@ -9,8 +9,7 @@ public class Menu extends GameState {
 
 	@Override
 	public void init() {
-		Resources.addTexture("Logo", "res/Logo.png");
-		Resources.addFont("NES", "res/NESCyrillic.ttf", 60);
+		
 	}
 
 	@Override

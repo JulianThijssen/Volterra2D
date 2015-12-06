@@ -9,7 +9,8 @@ import graphics.nim.volterra.util.MathUtil;
 import graphics.nim.volterra.util.Vector3f;
 
 public class Game extends GameState {
-	public static final float START_SPEED = 2;
+	public static final float BALL_SPEED = 2;
+	public static final float PADDLE_SPEED = 3;
 	public static final float SPEED_UP = 1.5f;
 	
 	private Entity[] paddles = new Entity[2];
@@ -41,7 +42,7 @@ public class Game extends GameState {
 		tb.position.set(200, 200, 0);
 		
 		vb.velocity.set((float) Math.random() + 1, (float) Math.random() * 2 - 1);
-		vb.velocity.normalise().scale(START_SPEED);
+		vb.velocity.normalise().scale(BALL_SPEED);
 	}
 	
 	@Override
@@ -57,20 +58,20 @@ public class Game extends GameState {
 		
 		// Paddle moving
 		if (Input.isKeyPressed(Input.KEY_W)) {
-			vp[0].velocity.y = 3;
+			vp[0].velocity.y = PADDLE_SPEED;
 		}
 		else if (Input.isKeyPressed(Input.KEY_S)) {
-			vp[0].velocity.y = -3;
+			vp[0].velocity.y = -PADDLE_SPEED;
 		}
 		else {
 			vp[0].velocity.y = 0;
 		}
 		
 		if (Input.isKeyPressed(Input.KEY_I)) {
-			vp[1].velocity.y = 3;
+			vp[1].velocity.y = PADDLE_SPEED;
 		}
 		else if (Input.isKeyPressed(Input.KEY_K)) {
-			vp[1].velocity.y = -3;
+			vp[1].velocity.y = -PADDLE_SPEED;
 		}
 		else {
 			vp[1].velocity.y = 0;

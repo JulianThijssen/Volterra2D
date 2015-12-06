@@ -19,10 +19,13 @@ public class Application extends BaseGame implements KeyListener {
 		
 		setTitle("Pong");
 		setResolution(400, 400);
-		
-		Resources.addFont("NES", "res/NESCyrillic.ttf", 60);
 	}
 
+	@Override
+	public void load() {
+		Resources.addFont("NES", "res/NESCyrillic.ttf", 60);
+	}
+	
 	@Override
 	public void update() {
 		GameState currentState = (GameState) getCurrentState();

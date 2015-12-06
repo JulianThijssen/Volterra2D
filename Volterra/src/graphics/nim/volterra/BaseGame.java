@@ -30,6 +30,7 @@ public abstract class BaseGame {
 		skipTime = (long) 1e9 / frameRate;
 		started = true;
 		
+		load();
 		tick();
 	}
 	
@@ -63,6 +64,8 @@ public abstract class BaseGame {
 	}
 	
 	public abstract void init();
+	
+	public abstract void load();
 	
 	public abstract void update();
 	

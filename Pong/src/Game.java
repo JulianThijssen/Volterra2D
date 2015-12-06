@@ -27,8 +27,7 @@ public class Game extends GameState {
 	public void init() {
 		Resources.addTexture("Paddle", "res/Paddle.png");
 		Resources.addTexture("Ball", "res/Ball.png");
-		Resources.addTexture("Digits", "res/Digits.png");
-		
+
 		paddles[0] = EntityFactory.createPaddle(32, 200);
 		paddles[1] = EntityFactory.createPaddle(400-32, 200);
 		ball = EntityFactory.createBall(200, 200);

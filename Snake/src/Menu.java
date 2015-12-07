@@ -31,6 +31,7 @@ public class Menu extends GameState {
 	public void render(Canvas canvas) {
 		canvas.clear();
 		canvas.setFont(Resources.getFont("NES"));
-		canvas.drawString("Hello", 200, 200, 0, 1);
+		canvas.setFontColor((float) Math.random(), (float) Math.random(), (float) Math.random());
+		canvas.drawString("Snake", 80, 200, 0, 2);
 	}
 }

@@ -104,4 +104,8 @@ public class Vector3f {
 	public static Vector3f negate(Vector3f v) {
 		return new Vector3f(-v.x, -v.y, -v.z);
 	}
+	
+	public static Vector2f toVector2f(Vector3f v) {
+		return new Vector2f(v.x, v.y);
+	}
 }

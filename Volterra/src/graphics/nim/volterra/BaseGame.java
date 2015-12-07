@@ -7,6 +7,7 @@ public abstract class BaseGame {
 	
 	private long maxSkip = 15;
 	private long skipTime;
+	private long time = 0;
 	
 	private boolean started = false;
 	
@@ -45,6 +46,7 @@ public abstract class BaseGame {
 		}
 		
 		long nextUpdate = System.nanoTime();
+		time = System.currentTimeMillis();
 		
 		while (!window.isClosed()) {
 			window.poll();
@@ -52,13 +54,16 @@ public abstract class BaseGame {
 			int skipped = 0;
 			
 			while (System.nanoTime() > nextUpdate  && skipped < maxSkip) {
+				Time.deltaTime = (System.currentTimeMillis() - time) / 1000.0f;
+				time = System.currentTimeMillis();
+				
 				update();
 				nextUpdate += skipTime;
 				skipped++;
 			}
 			
 			render(canvas);
-			//renderer.render();
+			
 			window.update();
 		}
 	}
@@ -81,7 +86,9 @@ public abstract class BaseGame {
 	}
 	
 	public void setTargetFrameRate(int rate) {
-		frameRate = rate;
+		if (rate > 0) {
+			frameRate = rate;
+		}
 	}
 	
 	public void addGameState(State state) {

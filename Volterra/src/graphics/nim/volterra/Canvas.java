@@ -96,7 +96,7 @@ public class Canvas {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
 	
-	public void drawRect(int x, int y, int w, int h) {
+	public void drawRect(float x, float y, float w, float h) {
 		glUniform1i(glGetUniformLocation(shader, "hasTexture"), 0);
 		glUniform3f(glGetUniformLocation(shader, "color"), color.x, color.y, color.z);
 		

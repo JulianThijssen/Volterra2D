@@ -16,7 +16,7 @@ public class Application extends BaseGame implements KeyListener {
 		addGameState(new Game(GAME));
 		
 		Input.addKeyListener(this);
-		
+		setTargetFrameRate(60);
 		setResolution(400, 400);
 	}
 

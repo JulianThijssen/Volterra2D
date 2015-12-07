@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FontLoader {
-	private static String alphabet = "ABCDEFGIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz0123456789,.!?;:'\"-()[]/";
+	private static String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz0123456789,.!?;:'\"-()[]/";
 	
 	public static Font loadFont(String name, float size) {
 		java.awt.Font font = new java.awt.Font(name, java.awt.Font.PLAIN, (int) size);
@@ -86,7 +86,7 @@ public class FontLoader {
 			bg.setColor(Color.WHITE);
 
 			bg.drawString(String.valueOf(c), 0, 0 + fontMetrics.getAscent());
-
+			
 			LetterImage li = new LetterImage(c, fontImage, charwidth, charheight);
 			charImages.add(li);
 			sum += charwidth;

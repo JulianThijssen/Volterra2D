@@ -17,6 +17,11 @@ public class Resources {
 		return textures.get(name);
 	}
 	
+	public static void addFont(String name, String fontName, float size) {
+		Font font = FontLoader.loadFont(fontName, size);
+		fonts.put(name, font);
+	}
+	
 	public static void addFont(String name, String path, float size, boolean antialias) {
 		Font font = FontLoader.loadFont(path, size, antialias);
 		fonts.put(name, font);

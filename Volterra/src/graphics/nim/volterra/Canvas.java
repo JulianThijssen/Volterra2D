@@ -34,7 +34,7 @@ public class Canvas {
 	private Font font;
 	private Vector3f color = new Vector3f(1, 1, 1);
 	private Vector3f fontColor = new Vector3f(1, 1, 1);
-	//private int quad = ShapeLoader.getQuad();
+	private int quad = ShapeLoader.getQuad();
 	
 	public Canvas() {
 		font = FontLoader.loadFont("Arial", 50);
@@ -83,6 +83,7 @@ public class Canvas {
 			sprite.nextFrame();
 		}
 		glBindTexture(GL_TEXTURE_2D, sprite.getTextureHandle());
+		glUniform1i(glGetUniformLocation(shader, "hasTexture"), 1);
 		glUniform1i(glGetUniformLocation(shader, "sprite"), 0);
 		glUniform3f(glGetUniformLocation(shader, "color"), color.x, color.y, color.z);
 		
@@ -95,6 +96,19 @@ public class Canvas {
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
 	
+	public void drawRect(int x, int y, int w, int h) {
+		glUniform1i(glGetUniformLocation(shader, "hasTexture"), 0);
+		glUniform3f(glGetUniformLocation(shader, "color"), color.x, color.y, color.z);
+		
+		modelMatrix.setIdentity();
+		modelMatrix.translate(new Vector3f(x, y, 0));
+		modelMatrix.scale(new Vector3f(w, h, 1));
+		glUniformMatrix4fv(glGetUniformLocation(shader, "modelMatrix"), false, modelMatrix.getBuffer());
+		
+		glBindVertexArray(quad);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	}
+	
 	public void drawString(String text, int x, int y, float depth, float scale) {
 		float stride = 0;
 
@@ -104,6 +118,7 @@ public class Canvas {
 			Letter letter = font.getHandle(c);
 			
 			glBindTexture(GL_TEXTURE_2D, font.spriteSheet.getHandle());
+			glUniform1i(glGetUniformLocation(shader, "hasTexture"), 1);
 			glUniform1i(glGetUniformLocation(shader, "sprite"), 0);
 			glUniform3f(glGetUniformLocation(shader, "color"), fontColor.x, fontColor.y, fontColor.z);
 			

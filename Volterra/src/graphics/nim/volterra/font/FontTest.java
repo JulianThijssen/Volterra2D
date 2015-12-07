@@ -19,7 +19,7 @@ import javax.swing.JPanel;
 public class FontTest extends JFrame implements Runnable {
 	private static final long serialVersionUID = 1L;
 	
-	private static String alphabet = "ABCDEFGIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz0123456789,.!?;:'\"-()[]/";
+	private static String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ abcdefghijklmnopqrstuvwxyz0123456789,.!?;:'\"-()[]/";
 	JPanel panel;
 	Graphics2D g;
 	
@@ -63,10 +63,10 @@ public class FontTest extends JFrame implements Runnable {
 	}
 
 	public void draw(Graphics2D g, boolean antialias) throws FontFormatException, IOException {
-		//Font font = new Font("Arial", Font.PLAIN, 60);
-		InputStream inputStream	= new FileInputStream("NESCyrillic.ttf");
+		Font font = new Font("Arial", Font.PLAIN, 60);
+		//InputStream inputStream	= new FileInputStream("NESCyrillic.ttf");
 		
-		Font font = Font.createFont(Font.TRUETYPE_FONT, inputStream);
+		//Font font = Font.createFont(Font.TRUETYPE_FONT, inputStream);
 		font = font.deriveFont(60f);
 		
 		List<LetterImage> charImages = new ArrayList<LetterImage>();

@@ -17,7 +17,7 @@ public class EntityFactory {
 		Entity e = new Entity();
 		e.addComponent(new Transform(x, y, 0));
 		e.addComponent(new Velocity(0, 0));
-		e.addComponent(new Sprite(Resources.getTexture("Ball")));
+		e.addComponent(new Sprite(Resources.getTexture("BallSheet"), 16, 16));
 		
 		return e;
 	}

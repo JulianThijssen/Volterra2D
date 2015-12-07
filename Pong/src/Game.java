@@ -6,12 +6,13 @@ import graphics.nim.volterra.Sprite;
 import graphics.nim.volterra.Transform;
 import graphics.nim.volterra.input.Input;
 import graphics.nim.volterra.util.MathUtil;
+import graphics.nim.volterra.util.Vector2f;
 import graphics.nim.volterra.util.Vector3f;
 
 public class Game extends GameState {
 	public static final float BALL_SPEED = 2;
 	public static final float PADDLE_SPEED = 3;
-	public static final float SPEED_UP = 1.5f;
+	public static final float SPEED_UP = 1.3f;
 	
 	private Entity[] paddles = new Entity[2];
 	private Entity ball;
@@ -26,7 +27,7 @@ public class Game extends GameState {
 	@Override
 	public void init() {
 		Resources.addTexture("Paddle", "res/Paddle.png");
-		Resources.addTexture("Ball", "res/Ball.png");
+		Resources.addTexture("BallSheet", "res/BallSheet.png");
 
 		paddles[0] = EntityFactory.createPaddle(32, 200);
 		paddles[1] = EntityFactory.createPaddle(400-32, 200);
@@ -72,13 +73,18 @@ public class Game extends GameState {
 			boolean collision = distanceSquared < sb.getWidth()/2 * sb.getWidth()/2;
 			
 			if (collision) {
-				vb.velocity.x *= -1;
+				float speed  = vb.velocity.length();
+				float dir = -MathUtil.sign(vb.velocity.x);
+				tb.position.add(new Vector3f(dir * 3, 0, 0));
+				vb.velocity = Vector2f.random();
+				vb.velocity.add(new Vector2f(dir * 2, 0));
+				vb.velocity.normalise().scale(speed);
 				vb.velocity.scale(SPEED_UP);
 			}
 		}
 		
 		// Wall Collision
-		if (tb.position.y <= 0 || tb.position.y >= 400) {
+		if (!MathUtil.inRange(tb.position.y, 0, 400)) {
 			vb.velocity.y *= -1;
 		}
 
@@ -123,9 +129,12 @@ public class Game extends GameState {
 	@Override
 	public void render(Canvas canvas) {
 		canvas.clear();
+		canvas.setColor(0, 1, 0);
 		canvas.draw(paddles[0]);
+		canvas.setColor(1, 0, 0);
 		canvas.draw(paddles[1]);
 		
+		canvas.setColor(1, 1, 1);
 		canvas.draw(ball);
 
 		canvas.setFont(Resources.getFont("NES"));

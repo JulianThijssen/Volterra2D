@@ -17,6 +17,7 @@ import static org.lwjgl.opengl.GL13.glActiveTexture;
 import static org.lwjgl.opengl.GL14.glBlendFuncSeparate;
 import static org.lwjgl.opengl.GL20.glGetUniformLocation;
 import static org.lwjgl.opengl.GL20.glUniform1i;
+import static org.lwjgl.opengl.GL20.glUniform3f;
 import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
@@ -31,6 +32,8 @@ public class Canvas {
 	private Matrix4f projMatrix = new Matrix4f();
 	private Matrix4f modelMatrix = new Matrix4f();
 	private Font font;
+	private Vector3f color = new Vector3f(1, 1, 1);
+	private Vector3f fontColor = new Vector3f(1, 1, 1);
 	//private int quad = ShapeLoader.getQuad();
 	
 	public Canvas() {
@@ -55,8 +58,12 @@ public class Canvas {
 		glClearColor(r, g, b, 1);
 	}
 	
+	public void setColor(float r, float g, float b) {
+		color.set(r, g, b);
+	}
+	
 	public void setFontColor(float r, float g, float b) {
-		
+		fontColor.set(r, g, b);
 	}
 	
 	public void clear() {
@@ -71,8 +78,13 @@ public class Canvas {
 		Transform t = e.getComponent(Transform.class);
 		Sprite sprite = e.getComponent(Sprite.class);
 		
+		int frames = sprite.getNumFrames();
+		if (frames > 1) {
+			sprite.nextFrame();
+		}
 		glBindTexture(GL_TEXTURE_2D, sprite.getTextureHandle());
 		glUniform1i(glGetUniformLocation(shader, "sprite"), 0);
+		glUniform3f(glGetUniformLocation(shader, "color"), color.x, color.y, color.z);
 		
 		modelMatrix.setIdentity();
 		modelMatrix.translate(new Vector3f(t.position.x, t.position.y, t.position.z));
@@ -93,6 +105,7 @@ public class Canvas {
 			
 			glBindTexture(GL_TEXTURE_2D, font.spriteSheet.getHandle());
 			glUniform1i(glGetUniformLocation(shader, "sprite"), 0);
+			glUniform3f(glGetUniformLocation(shader, "color"), fontColor.x, fontColor.y, fontColor.z);
 			
 			modelMatrix.setIdentity();
 			modelMatrix.translate(new Vector3f(x + stride, y, depth));

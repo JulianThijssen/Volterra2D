@@ -63,4 +63,12 @@ public class Sprite extends Component {
 		}
 		this.currentFrame = frame;
 	}
+	
+	public void nextFrame() {
+		this.currentFrame = (currentFrame + 1) % numFrames;
+	}
+	
+	public int getNumFrames() {
+		return numFrames;
+	}
 }

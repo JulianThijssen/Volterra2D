@@ -79,6 +79,10 @@ public class Vector2f {
 		return new Vector2f(-v.x, -v.y);
 	}
 	
+	public static Vector2f random() {
+		return new Vector2f((float) Math.random() * 2 - 1, (float) Math.random() * 2 - 1).normalise();
+	}
+	
 	public static float distance(Vector2f v1, Vector2f v2) {
 		return Vector2f.sub(v2, v1).length();
 	}

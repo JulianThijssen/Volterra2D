@@ -18,6 +18,10 @@ public class MathUtil {
 		return f;
 	}
 	
+	public static float sign(float f) {
+		return (f > 0) ? 1: -1;
+	}
+	
 	public static boolean inRange(float f, float low, float high) {
 		return f >= low && f <= high;
 	}

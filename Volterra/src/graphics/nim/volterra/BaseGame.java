@@ -9,8 +9,6 @@ public abstract class BaseGame {
 	private long skipTime;
 	private long time = 0;
 	
-	private boolean started = false;
-	
 	private StateMachine gameState = new StateMachine();
 	
 	/* Window */
@@ -29,7 +27,6 @@ public abstract class BaseGame {
 		window = new Window(title, width, height);
 		canvas = new Canvas();
 		skipTime = (long) 1e9 / frameRate;
-		started = true;
 		
 		load();
 		tick();

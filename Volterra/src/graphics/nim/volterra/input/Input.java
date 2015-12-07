@@ -87,7 +87,6 @@ public class Input {
 	
 	public static void addKeyEvent(int key, boolean state) {
 		if (key >= 32 && key < 400) {
-			System.out.println("Key: " + key);
 			events.offer(new KeyEvent(key, state));
 			for (KeyListener listener: keyListeners) {
 				if (state) {

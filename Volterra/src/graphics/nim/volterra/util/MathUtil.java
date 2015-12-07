@@ -17,4 +17,8 @@ public class MathUtil {
 		}
 		return f;
 	}
+	
+	public static boolean inRange(float f, float low, float high) {
+		return f >= low && f <= high;
+	}
 }

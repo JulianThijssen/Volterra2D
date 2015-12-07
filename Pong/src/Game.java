@@ -55,31 +55,10 @@ public class Game extends GameState {
 		Sprite sb = ball.getComponent(Sprite.class);
 		Sprite[] sp = {paddles[0].getComponent(Sprite.class), paddles[1].getComponent(Sprite.class)};
 		
-		// Paddle moving
-		if (Input.isKeyPressed(Input.KEY_W)) {
-			vp[0].velocity.y = PADDLE_SPEED;
-		}
-		else if (Input.isKeyPressed(Input.KEY_S)) {
-			vp[0].velocity.y = -PADDLE_SPEED;
-		}
-		else {
-			vp[0].velocity.y = 0;
-		}
-		
-		if (Input.isKeyPressed(Input.KEY_I)) {
-			vp[1].velocity.y = PADDLE_SPEED;
-		}
-		else if (Input.isKeyPressed(Input.KEY_K)) {
-			vp[1].velocity.y = -PADDLE_SPEED;
-		}
-		else {
-			vp[1].velocity.y = 0;
-		}
+		movePaddle(tp, vp);
 		
 		// Applying velocities
 		tb.position.add(new Vector3f(vb.velocity.x, vb.velocity.y, 0));
-		tp[0].position.add(new Vector3f(vp[0].velocity.x, vp[0].velocity.y, 0));
-		tp[1].position.add(new Vector3f(vp[1].velocity.x, vp[1].velocity.y, 0));
 
 		// Paddle Collision
 		for (int i = 0; i < paddles.length; i++) {
@@ -112,6 +91,33 @@ public class Game extends GameState {
 			playerTwoScore += 1;
 			reset();
 		}
+	}
+	
+	public void movePaddle(Transform[] tp, Velocity[] vp) {
+		// Paddle moving
+		if (Input.isKeyPressed(Input.KEY_W) && tp[0].position.y < 400-32) {
+			vp[0].velocity.y = PADDLE_SPEED;
+		}
+		else if (Input.isKeyPressed(Input.KEY_S) && tp[0].position.y > 32) {
+			vp[0].velocity.y = -PADDLE_SPEED;
+		}
+		else {
+			vp[0].velocity.y = 0;
+		}
+		
+		tp[0].position.add(new Vector3f(vp[0].velocity.x, vp[0].velocity.y, 0));
+		
+		if (Input.isKeyPressed(Input.KEY_I) && tp[1].position.y < 400-32) {
+			vp[1].velocity.y = PADDLE_SPEED;
+		}
+		else if (Input.isKeyPressed(Input.KEY_K) && tp[1].position.y > 32) {
+			vp[1].velocity.y = -PADDLE_SPEED;
+		}
+		else {
+			vp[1].velocity.y = 0;
+		}
+		
+		tp[1].position.add(new Vector3f(vp[1].velocity.x, vp[1].velocity.y, 0));
 	}
 	
 	@Override

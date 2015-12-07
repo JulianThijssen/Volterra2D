@@ -42,11 +42,13 @@ public class Application extends BaseGame implements KeyListener {
 
 	@Override
 	public void keyPressed(int key) {
-		if (key == Input.KEY_1) {
-			setState(MENU);
-		}
-		if (key == Input.KEY_2) {
+		if (getCurrentState().getId() == MENU) {
 			setState(GAME);
+		}
+		if (getCurrentState().getId() == GAME) {
+			if (key == Input.KEY_ESC) {
+				setState(MENU);
+			}
 		}
 	}
 

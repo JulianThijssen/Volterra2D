@@ -13,7 +13,7 @@ public class Application extends BaseGame implements KeyListener {
 	public void init() {
 		addGameState(new Menu(MENU));
 		addGameState(new Game(GAME));
-		setState(GAME);
+		//setState(GAME);
 		
 		Input.addKeyListener(this);
 		
@@ -23,7 +23,7 @@ public class Application extends BaseGame implements KeyListener {
 
 	@Override
 	public void load() {
-		Resources.addFont("NES", "res/NESCyrillic.ttf", 60);
+		Resources.addFont("NES", "res/NESCyrillic.ttf", 60, false);
 	}
 	
 	@Override

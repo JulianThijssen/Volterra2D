@@ -44,7 +44,7 @@ public class FontLoader {
 			Log.error("The specified font is incorrectly made");
 		}
 		
-		return loadFont(font, size, true);
+		return loadFont(font, size, antialias);
 	}
 	
 	private static Font loadFont(java.awt.Font font, float size, boolean antialias) {

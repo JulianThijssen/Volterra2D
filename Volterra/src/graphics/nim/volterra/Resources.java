@@ -17,8 +17,8 @@ public class Resources {
 		return textures.get(name);
 	}
 	
-	public static void addFont(String name, String path, float size) {
-		Font font = FontLoader.loadFont(path, size, false); // FIXME second parameter is hardcoded
+	public static void addFont(String name, String path, float size, boolean antialias) {
+		Font font = FontLoader.loadFont(path, size, antialias);
 		fonts.put(name, font);
 	}
 	

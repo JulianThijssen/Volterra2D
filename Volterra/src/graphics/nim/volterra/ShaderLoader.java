@@ -18,6 +18,8 @@ import graphics.nim.volterra.util.Log;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class ShaderLoader {
 	public static final int LOG_SIZE = 1024;
@@ -43,7 +45,9 @@ public class ShaderLoader {
 		int shader = 0;
 		
 		try {
-			BufferedReader in = new BufferedReader(new FileReader(filename));
+			InputStream is = BaseGame.class.getClassLoader().getResourceAsStream(filename);
+			//BufferedReader in = new BufferedReader(new FileReader(filename));
+			BufferedReader in = new BufferedReader(new InputStreamReader(is));
 			String line = null;
 			while((line = in.readLine()) != null) {
 				shaderSource.append(line).append("\n");

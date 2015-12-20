@@ -18,8 +18,8 @@ public class Camera {
 	private float   zNear       = -DEFAULT_DEPTH/2;
 	private float   zFar        = DEFAULT_DEPTH/2;
 	
-	private Matrix4f projectionMatrix;
-	private Matrix4f viewMatrix;
+	private Matrix4f projectionMatrix = new Matrix4f();
+	private Matrix4f viewMatrix = new Matrix4f();
 	
 	private Vector2f position = new Vector2f(0, 0);
 	private float zoom = 1;
@@ -59,7 +59,7 @@ public class Camera {
 	
 	private void recalculateView() {
 		viewMatrix.setIdentity();
-		viewMatrix.translate(new Vector3f(position, 0));
+		viewMatrix.translate(new Vector3f(-position.x, -position.y, 0));
 		viewMatrix.scale(new Vector3f(zoom, zoom, 1));
 	}
 	

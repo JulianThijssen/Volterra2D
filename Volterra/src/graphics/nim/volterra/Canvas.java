@@ -41,7 +41,9 @@ public class Canvas {
 		glEnable(GL_BLEND);
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 		
-		shader = ShaderLoader.loadShaders("res/unlit.vert", "res/unlit.frag");
+		shader = ShaderLoader.loadShaders("unlit.vert", "unlit.frag");
+		
+		camera.setPosition(Window.width/2, Window.height/2);
 	}
 	
 	public void setFont(Font font) {
@@ -68,7 +70,7 @@ public class Canvas {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(shader);
 		glUniformMatrix4fv(glGetUniformLocation(shader, "projMatrix"), false, camera.getProjMatrix().getBuffer());
-		glUniformMatrix4fv(glGetUniformLocation(shader, "modelMatrix"), false, modelMatrix.getBuffer());
+		glUniformMatrix4fv(glGetUniformLocation(shader, "viewMatrix"), false, camera.getViewMatrix().getBuffer());
 		glActiveTexture(0);
 	}
 	

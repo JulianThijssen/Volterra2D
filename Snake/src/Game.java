@@ -114,7 +114,7 @@ public class Game extends GameState {
 			
 			Transform t = apple.getComponent(Transform.class);
 			
-			if (Vector2f.distance(Vector3f.toVector2f(t.position), spawn) < 16) {
+			if (Vector2f.distance(t.position, spawn) < 16) {
 				ait.remove();
 				appleCount++;
 			}

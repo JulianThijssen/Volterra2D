@@ -2,7 +2,7 @@ package graphics.nim.volterra;
 
 import graphics.nim.volterra.util.Log;
 
-public class Sprite extends Component {
+public class Sprite implements Component {
 	private Texture texture;
 	private int[] vaoArray;
 	
@@ -11,6 +11,10 @@ public class Sprite extends Component {
 	
 	private int currentFrame = 0;
 	private int numFrames = 1;
+	private float time = 0;
+	private float length = 1;
+	
+	private boolean flipped = false;
 	
 	public Sprite(Texture texture) {
 		this.texture = texture;
@@ -21,10 +25,11 @@ public class Sprite extends Component {
 		vaoArray[0] = ShapeLoader.getSubQuad(0, 0, 1, 1);
 	}
 	
-	public Sprite(Texture texture, int frameWidth, int frameHeight) {
+	public Sprite(Texture texture, int frameWidth, int frameHeight, float clipLength) {
 		this.texture = texture;
 		this.width = frameWidth;
 		this.height = frameHeight;
+		this.length = clipLength;
 		
 		int numFramesX = texture.getWidth() / width;
 		int numFramesY = texture.getHeight() / height;
@@ -64,11 +69,24 @@ public class Sprite extends Component {
 		this.currentFrame = frame;
 	}
 	
-	public void nextFrame() {
-		this.currentFrame = (currentFrame + 1) % numFrames;
+	public void update() {
+		time += Time.renderTime;
+		
+		if (time > length / numFrames) {
+			this.currentFrame = (currentFrame + 1) % numFrames;
+			time = 0;
+		}
 	}
 	
 	public int getNumFrames() {
 		return numFrames;
+	}
+	
+	public boolean isFlipped() {
+		return flipped;
+	}
+	
+	public void flip(boolean flip) {
+		flipped = flip;
 	}
 }

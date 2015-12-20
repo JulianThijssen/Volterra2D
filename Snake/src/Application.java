@@ -5,7 +5,6 @@ import graphics.nim.volterra.Resources;
 import graphics.nim.volterra.input.Input;
 import graphics.nim.volterra.input.KeyListener;
 
-
 public class Application extends BaseGame implements KeyListener {
 	public static final int MENU = 0;
 	public static final int GAME = 1;

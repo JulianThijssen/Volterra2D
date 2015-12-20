@@ -1,94 +1,93 @@
 package graphics.nim.volterra;
 
 import graphics.nim.volterra.util.Matrix4f;
+import graphics.nim.volterra.util.Vector2f;
+import graphics.nim.volterra.util.Vector3f;
 
 public class Camera {
-	public static final float   DEFAULT_FOVY = 90;
-	public static final float   DEFAULT_ASPECTRATIO = 1;
 	public static final float   DEFAULT_LEFT = -1;
 	public static final float   DEFAULT_RIGHT = 1;
 	public static final float   DEFAULT_TOP = 1;
 	public static final float   DEFAULT_BOTTOM = -1;
-	public static final float   DEFAULT_ZNEAR = 0.1f;
-	public static final float   DEFAULT_ZFAR = 100f;
-	public static final boolean DEFAULT_PERSPECTIVE = true;
+	public static final float   DEFAULT_DEPTH = 20;
 	
-	private float   fovy        = DEFAULT_FOVY;
-	private float   aspect      = DEFAULT_ASPECTRATIO;
 	private float   left        = DEFAULT_LEFT;
 	private float   right       = DEFAULT_RIGHT;
 	private float   top         = DEFAULT_TOP;
 	private float   bottom      = DEFAULT_BOTTOM;
-	private float   zNear       = DEFAULT_ZNEAR;
-	private float   zFar        = DEFAULT_ZFAR;
-	private boolean perspective = DEFAULT_PERSPECTIVE;
+	private float   zNear       = -DEFAULT_DEPTH/2;
+	private float   zFar        = DEFAULT_DEPTH/2;
+	
+	private Matrix4f projectionMatrix;
+	private Matrix4f viewMatrix;
+	
+	private Vector2f position = new Vector2f(0, 0);
+	private float zoom = 1;
 	
 	public Camera() {
-		
+		recalculateProj();
+		recalculateView();
 	}
 	
-	public Camera(float left, float right, float bottom, float top, float zNear, float zFar) {
-		setOrthographic();
-		this.left = left;
-		this.right = right;
-		this.bottom = bottom;
-		this.top = top;
-		this.zNear = zNear;
-		this.zFar = zFar;
+	public Camera(float width, float height) {
+		this.left = -width/2;
+		this.right = width/2;
+		this.bottom = -height/2;
+		this.top = height/2;
+		recalculateProj();
+		recalculateView();
 	}
 	
-	public Camera(float fovy, float aspect, float zNear, float zFar) {
-		setPerspective();
-		this.fovy = fovy;
-		this.aspect = aspect;
-		this.zNear = zNear;
-		this.zFar = zFar;
+	public Matrix4f getProjMatrix() {
+		return projectionMatrix;
 	}
 	
-	public void loadProjectionMatrix(Matrix4f m) {
-		recalculate(m);
+	public Matrix4f getViewMatrix() {
+		return viewMatrix;
 	}
 	
-	private void recalculate(Matrix4f m) {
-		m.setIdentity();
-		if(perspective) {
-			m.array[0] = (float) (1.0 / Math.tan(Math.toRadians(fovy / 2.0))) / aspect;
-			m.array[5] = (float) (1.0 / Math.tan(Math.toRadians(fovy / 2.0)));
-			m.array[10] = (zNear + zFar) / (zNear - zFar);
-			m.array[11] = -1;
-			m.array[14] = (2 * zNear * zFar) / (zNear - zFar);
-			m.array[15] = 0;
-		} else {
-			m.array[0] = 2 / (right - left);
-			m.array[5] = 2 / (top - bottom);
-			m.array[10] = -2 / (zFar - zNear);
-			m.array[12] = -(right + left) / (right - left);
-			m.array[13] = -(top + bottom) / (top - bottom);
-			m.array[14] = -(zFar + zNear) / (zFar - zNear);
-		}
+	private void recalculateProj() {
+		projectionMatrix.setIdentity();
+
+		projectionMatrix.array[0] = 2 / (right - left);
+		projectionMatrix.array[5] = 2 / (top - bottom);
+		projectionMatrix.array[10] = -2 / (zFar - zNear);
+		projectionMatrix.array[12] = -(right + left) / (right - left);
+		projectionMatrix.array[13] = -(top + bottom) / (top - bottom);
+		projectionMatrix.array[14] = -(zFar + zNear) / (zFar - zNear);
 	}
 	
-	public void setFov(float fovy) {
-		this.fovy = fovy;
+	private void recalculateView() {
+		viewMatrix.setIdentity();
+		viewMatrix.translate(new Vector3f(position, 0));
+		viewMatrix.scale(new Vector3f(zoom, zoom, 1));
 	}
 	
-	public void setAspectRatio(float aspect) {
-		this.aspect = aspect;
+	public void setWidth(float width) {
+		this.left = -width / 2;
+		this.right = width / 2;
+		recalculateProj();
 	}
 	
-	public void setZNear(float zNear) {
-		this.zNear = zNear;
+	public void setHeight(float height) {
+		this.bottom = -height / 2;
+		this.top = height / 2;
+		recalculateProj();
 	}
 	
-	public void setZFar(float zFar) {
-		this.zFar = zFar;
+	public void setDepth(float depth) {
+		this.zNear = -depth/2;
+		this.zFar = depth/2;
+		recalculateProj();
 	}
 	
-	public void setPerspective() {
-		perspective = true;
+	public void setPosition(float x, float y) {
+		position.set(x, y);
+		recalculateView();
 	}
 	
-	public void setOrthographic() {
-		perspective = false;
+	public void setZoom(float zoom) {
+		this.zoom = zoom;
+		recalculateView();
 	}
 }

@@ -28,8 +28,7 @@ import graphics.nim.volterra.util.Vector3f;
 public class Canvas {
 	private int shader;
 	
-	private Camera camera = new Camera(0, Window.width, 0, Window.height, -10, 10);
-	private Matrix4f projMatrix = new Matrix4f();
+	private Camera camera = new Camera(Window.width, Window.height);
 	private Matrix4f modelMatrix = new Matrix4f();
 	private Font font;
 	private Vector3f color = new Vector3f(1, 1, 1);
@@ -43,7 +42,6 @@ public class Canvas {
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 		
 		shader = ShaderLoader.loadShaders("res/unlit.vert", "res/unlit.frag");
-		camera.loadProjectionMatrix(projMatrix);
 	}
 	
 	public void setFont(Font font) {
@@ -69,7 +67,7 @@ public class Canvas {
 	public void clear() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(shader);
-		glUniformMatrix4fv(glGetUniformLocation(shader, "projMatrix"), false, projMatrix.getBuffer());
+		glUniformMatrix4fv(glGetUniformLocation(shader, "projMatrix"), false, camera.getProjMatrix().getBuffer());
 		glUniformMatrix4fv(glGetUniformLocation(shader, "modelMatrix"), false, modelMatrix.getBuffer());
 		glActiveTexture(0);
 	}
@@ -80,7 +78,7 @@ public class Canvas {
 		
 		int frames = sprite.getNumFrames();
 		if (frames > 1) {
-			sprite.nextFrame();
+			sprite.update();
 		}
 		glBindTexture(GL_TEXTURE_2D, sprite.getTextureHandle());
 		glUniform1i(glGetUniformLocation(shader, "hasTexture"), 1);
@@ -88,8 +86,12 @@ public class Canvas {
 		glUniform3f(glGetUniformLocation(shader, "color"), color.x, color.y, color.z);
 		
 		modelMatrix.setIdentity();
-		modelMatrix.translate(new Vector3f(t.position.x, t.position.y, t.position.z));
-		modelMatrix.scale(new Vector3f(sprite.getWidth() * t.scale.x, sprite.getHeight() * t.scale.y, 1));
+		modelMatrix.translate(new Vector3f(t.position.x, t.position.y, t.depth));
+		if (!sprite.isFlipped()) {
+			modelMatrix.scale(new Vector3f(sprite.getWidth() * t.scale.x, sprite.getHeight() * t.scale.y, 1));
+		} else {
+			modelMatrix.scale(new Vector3f(sprite.getWidth() * -t.scale.x, sprite.getHeight() * t.scale.y, 1));
+		}
 		glUniformMatrix4fv(glGetUniformLocation(shader, "modelMatrix"), false, modelMatrix.getBuffer());
 		
 		glBindVertexArray(sprite.getHandle());
@@ -103,6 +105,21 @@ public class Canvas {
 		modelMatrix.setIdentity();
 		modelMatrix.translate(new Vector3f(x, y, 0));
 		modelMatrix.scale(new Vector3f(w, h, 1));
+		glUniformMatrix4fv(glGetUniformLocation(shader, "modelMatrix"), false, modelMatrix.getBuffer());
+		
+		glBindVertexArray(quad);
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+	}
+	
+	public void drawImage(float x, float y, Texture image) {
+		glBindTexture(GL_TEXTURE_2D, image.getHandle());
+		glUniform1i(glGetUniformLocation(shader, "hasTexture"), 1);
+		glUniform1i(glGetUniformLocation(shader, "sprite"), 0);
+		glUniform3f(glGetUniformLocation(shader, "color"), 1, 1, 1);
+		
+		modelMatrix.setIdentity();
+		modelMatrix.translate(new Vector3f(x, y, 0));
+		modelMatrix.scale(new Vector3f(image.getWidth(), image.getHeight(), 1));
 		glUniformMatrix4fv(glGetUniformLocation(shader, "modelMatrix"), false, modelMatrix.getBuffer());
 		
 		glBindVertexArray(quad);

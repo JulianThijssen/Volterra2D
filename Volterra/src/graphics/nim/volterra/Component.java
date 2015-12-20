@@ -1,5 +1,5 @@
 package graphics.nim.volterra;
 
-public abstract class Component {
+public interface Component {
 
 }

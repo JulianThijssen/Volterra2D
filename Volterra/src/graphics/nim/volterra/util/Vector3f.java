@@ -15,12 +15,16 @@ public class Vector3f {
 		set(x, y, z);
 	}
 	
+	public Vector3f(Vector2f v, float z) {
+		set(v.x, v.y, z);
+	}
+	
 	public void set(float x, float y, float z) {
 		this.x = x;
 		this.y = y;
 		this.z = z;
 	}
-	
+
 	public void set(Vector3f v) {
 		this.x = v.x;
 		this.y = v.y;

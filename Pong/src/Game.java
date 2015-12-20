@@ -39,7 +39,7 @@ public class Game extends GameState {
 	public void reset() {
 		Transform tb = ball.getComponent(Transform.class);
 		Velocity vb = ball.getComponent(Velocity.class);
-		tb.position.set(200, 200, 0);
+		tb.position.set(200, 200);
 		
 		vb.velocity.set((float) Math.random() + 1, (float) Math.random() * 2 - 1);
 		vb.velocity.normalise().scale(BALL_SPEED);
@@ -59,7 +59,7 @@ public class Game extends GameState {
 		movePaddle(tp, vp);
 		
 		// Applying velocities
-		tb.position.add(new Vector3f(vb.velocity.x, vb.velocity.y, 0));
+		tb.position.add(vb.velocity);
 
 		// Paddle Collision
 		for (int i = 0; i < paddles.length; i++) {
@@ -75,7 +75,7 @@ public class Game extends GameState {
 			if (collision) {
 				float speed  = vb.velocity.length();
 				float dir = -MathUtil.sign(vb.velocity.x);
-				tb.position.add(new Vector3f(dir * 3, 0, 0));
+				tb.position.add(new Vector2f(dir * 3, 0));
 				vb.velocity = Vector2f.random();
 				vb.velocity.add(new Vector2f(dir * 2, 0));
 				vb.velocity.normalise().scale(speed);
@@ -111,7 +111,7 @@ public class Game extends GameState {
 			vp[0].velocity.y = 0;
 		}
 		
-		tp[0].position.add(new Vector3f(vp[0].velocity.x, vp[0].velocity.y, 0));
+		tp[0].position.add(new Vector2f(vp[0].velocity.x, vp[0].velocity.y));
 		
 		if (Input.isKeyPressed(Input.KEY_I) && tp[1].position.y < 400-32) {
 			vp[1].velocity.y = PADDLE_SPEED;
@@ -123,7 +123,7 @@ public class Game extends GameState {
 			vp[1].velocity.y = 0;
 		}
 		
-		tp[1].position.add(new Vector3f(vp[1].velocity.x, vp[1].velocity.y, 0));
+		tp[1].position.add(new Vector2f(vp[1].velocity.x, vp[1].velocity.y));
 	}
 	
 	@Override

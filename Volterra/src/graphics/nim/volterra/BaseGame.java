@@ -7,7 +7,8 @@ public abstract class BaseGame {
 	
 	private long maxSkip = 15;
 	private long skipTime;
-	private long time = 0;
+	private long updateTime = 0;
+	private long renderTime = 0;
 	
 	private StateMachine gameState = new StateMachine();
 	
@@ -43,7 +44,8 @@ public abstract class BaseGame {
 		}
 		
 		long nextUpdate = System.nanoTime();
-		time = System.currentTimeMillis();
+		updateTime = System.nanoTime();
+		renderTime = System.nanoTime();
 		
 		while (!window.isClosed()) {
 			window.poll();
@@ -51,14 +53,17 @@ public abstract class BaseGame {
 			int skipped = 0;
 			
 			while (System.nanoTime() > nextUpdate  && skipped < maxSkip) {
-				Time.deltaTime = (System.currentTimeMillis() - time) / 1000.0f;
-				time = System.currentTimeMillis();
+				Time.deltaTime = (System.nanoTime() - updateTime) / 1000000000.0f;
+				updateTime = System.nanoTime();
 				
 				update();
 				nextUpdate += skipTime;
 				skipped++;
 			}
 			
+			Time.renderTime = (System.nanoTime() - renderTime) / 1000000000.0f;
+			renderTime = System.nanoTime();
+
 			render(canvas);
 			
 			window.update();

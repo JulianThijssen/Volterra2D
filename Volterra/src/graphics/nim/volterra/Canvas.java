@@ -22,6 +22,7 @@ import static org.lwjgl.opengl.GL20.glUniformMatrix4fv;
 import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import graphics.nim.volterra.font.FontLoader;
+import graphics.nim.volterra.font.Letter;
 import graphics.nim.volterra.util.Matrix4f;
 import graphics.nim.volterra.util.Vector2f;
 import graphics.nim.volterra.util.Vector3f;

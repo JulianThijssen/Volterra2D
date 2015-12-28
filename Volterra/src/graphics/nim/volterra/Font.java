@@ -1,5 +1,7 @@
 package graphics.nim.volterra;
 
+import graphics.nim.volterra.font.Letter;
+
 import java.util.HashMap;
 
 public class Font {

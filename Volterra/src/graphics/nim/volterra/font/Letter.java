@@ -1,4 +1,4 @@
-package graphics.nim.volterra;
+package graphics.nim.volterra.font;
 
 public class Letter {
 	public int handle;

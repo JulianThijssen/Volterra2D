@@ -1,7 +1,6 @@
 package graphics.nim.volterra.font;
 
 import graphics.nim.volterra.Font;
-import graphics.nim.volterra.Letter;
 import graphics.nim.volterra.ShapeLoader;
 import graphics.nim.volterra.TextureLoader;
 import graphics.nim.volterra.util.Log;

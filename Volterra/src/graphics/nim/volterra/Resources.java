@@ -1,6 +1,7 @@
 package graphics.nim.volterra;
 
 import graphics.nim.volterra.font.FontLoader;
+import graphics.nim.volterra.util.Log;
 
 import java.util.HashMap;
 
@@ -14,7 +15,14 @@ public class Resources {
 	}
 	
 	public static Texture getTexture(String name) {
-		return textures.get(name);
+		Texture texture = textures.get(name);
+		
+		if (texture == null) {
+			Log.error("You are trying to load non-existing texture: " + name);
+			System.exit(1);
+		}
+		
+		return texture;
 	}
 	
 	public static void addFont(String name, String fontName, float size) {

@@ -20,11 +20,12 @@ public abstract class BaseGame {
 	private int frameRate = 60;
 	
 	public BaseGame() {
-		init();
 		start();
 	}
 	
 	private void start() {
+		init();
+		
 		window = new Window(title, width, height);
 		canvas = new Canvas();
 		skipTime = (long) 1e9 / frameRate;

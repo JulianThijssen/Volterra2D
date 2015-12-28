@@ -31,7 +31,7 @@ public class Game extends GameState {
 
 	@Override
 	public void init() {
-
+		camera.setPosition(Window.width/2, Window.height/2);
 	}
 
 	@Override
@@ -123,6 +123,9 @@ public class Game extends GameState {
 	
 	@Override
 	public void render(Canvas canvas) {
+		canvas.setBounds(0, Window.width, 0, Window.height);
+		//canvas.setCamera(camera);
+		
 		canvas.clear();
 		canvas.drawString("Game", 100, 200, 0, 2);
 		

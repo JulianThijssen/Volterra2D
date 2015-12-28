@@ -1,7 +1,8 @@
 package graphics.nim.volterra;
 
-
 public abstract class GameState extends State {
+	protected Camera camera = new Camera();
+	
 	public GameState(int id) {
 		super(id);
 	}

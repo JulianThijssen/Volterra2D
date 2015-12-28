@@ -23,13 +23,18 @@ import static org.lwjgl.opengl.GL20.glUseProgram;
 import static org.lwjgl.opengl.GL30.glBindVertexArray;
 import graphics.nim.volterra.font.FontLoader;
 import graphics.nim.volterra.util.Matrix4f;
+import graphics.nim.volterra.util.Vector2f;
 import graphics.nim.volterra.util.Vector3f;
 
 public class Canvas {
 	private int shader;
 	
-	private Camera camera = new Camera(Window.width, Window.height);
+	private Matrix4f projMatrix = new Matrix4f();
+	private Matrix4f viewMatrix = new Matrix4f();
 	private Matrix4f modelMatrix = new Matrix4f();
+	
+	private Bounds bounds = new Bounds(-1, 1, -1, 1);
+	
 	private Font font;
 	private Vector3f color = new Vector3f(1, 1, 1);
 	private Vector3f fontColor = new Vector3f(1, 1, 1);
@@ -42,8 +47,6 @@ public class Canvas {
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 		
 		shader = ShaderLoader.loadShaders("unlit.vert", "unlit.frag");
-		
-		camera.setPosition(Window.width/2, Window.height/2);
 	}
 	
 	public void setFont(Font font) {
@@ -66,11 +69,33 @@ public class Canvas {
 		fontColor.set(r, g, b);
 	}
 	
+	public void setBounds(float left, float right, float bottom, float top) {
+		projMatrix.setIdentity();
+
+		projMatrix.array[0] = 2 / (right - left);
+		projMatrix.array[5] = 2 / (top - bottom);
+		projMatrix.array[10] = -1;
+		projMatrix.array[12] = -(right + left) / (right - left);
+		projMatrix.array[13] = -(top + bottom) / (top - bottom);
+		projMatrix.array[14] = 0;
+		
+		bounds.set(left, right, bottom, top);
+	}
+	
+	public void setCamera(Camera camera) {
+		Vector2f position = camera.getPosition();
+		float zoom = camera.getZoom();
+		
+		viewMatrix.setIdentity();
+		viewMatrix.translate(new Vector3f(-position.x, -position.y, 0));
+		viewMatrix.scale(new Vector3f(zoom, zoom, 1));
+	}
+	
 	public void clear() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(shader);
-		glUniformMatrix4fv(glGetUniformLocation(shader, "projMatrix"), false, camera.getProjMatrix().getBuffer());
-		glUniformMatrix4fv(glGetUniformLocation(shader, "viewMatrix"), false, camera.getViewMatrix().getBuffer());
+		glUniformMatrix4fv(glGetUniformLocation(shader, "projMatrix"), false, projMatrix.getBuffer());
+		glUniformMatrix4fv(glGetUniformLocation(shader, "viewMatrix"), false, viewMatrix.getBuffer());
 		glActiveTexture(0);
 	}
 	

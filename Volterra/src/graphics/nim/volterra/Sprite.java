@@ -36,11 +36,13 @@ public class Sprite implements Component {
 		numFrames = numFramesX * numFramesY;
 		System.out.println("Num Frames: " + numFrames);
 		vaoArray = new int[numFrames];
+		System.out.println("Tex dims: " + texture.getWidth() + " x " + texture.getHeight());
+		System.out.println("Frame dims: " + frameWidth + " x " + frameHeight);
 		for (int i = 0; i < numFrames; i++) {
-			float x1 = ((frameWidth * i) % texture.getWidth()) / (float)texture.getWidth();
-			float y1 = ((frameHeight * i) % texture.getHeight()) / (float)texture.getHeight();
-			float x2 = x1 + (frameWidth / (float)texture.getWidth());
-			float y2 = y1 + (frameHeight / (float)texture.getHeight());
+			float x1 = (((frameWidth * i) % texture.getWidth()) / (float)texture.getWidth()) + (0.5f / (float)texture.getWidth());
+			float y1 = ((frameHeight * i) % texture.getHeight()) / (float)texture.getHeight() + (0.5f / (float)texture.getHeight());
+			float x2 = x1 + (frameWidth / (float)texture.getWidth()) - (0.5f / (float)texture.getWidth());
+			float y2 = y1 + (frameHeight / (float)texture.getHeight()) - (0.5f / (float)texture.getHeight());
 			System.out.printf("%f, %f, %f, %f\n", x1, y1, x2, y2);
 			vaoArray[i] = ShapeLoader.getSubQuad(x1, y1, x2, y2);
 		}

@@ -8,21 +8,11 @@ import java.util.HashMap;
 public class Resources {
 	private static HashMap<String, Texture> textures = new HashMap<String, Texture>();
 	private static HashMap<String, Font> fonts = new HashMap<String, Font>();
+	private static HashMap<String, Shader> shaders = new HashMap<String, Shader>();
 	
 	public static void addTexture(String name, String path) {
 		Texture texture = TextureLoader.load(path);
 		textures.put(name, texture);
-	}
-	
-	public static Texture getTexture(String name) {
-		Texture texture = textures.get(name);
-		
-		if (texture == null) {
-			Log.error("You are trying to load non-existing texture: " + name);
-			System.exit(1);
-		}
-		
-		return texture;
 	}
 	
 	public static void addFont(String name, String fontName, float size) {
@@ -35,7 +25,27 @@ public class Resources {
 		fonts.put(name, font);
 	}
 	
+	public static void addShader(String name, String path) {
+		Shader shader = ShaderLoader.loadShaders(path + ".vert", path + ".frag");
+		shaders.put(name, shader);
+	}
+	
+	public static Texture getTexture(String name) {
+		Texture texture = textures.get(name);
+		
+		if (texture == null) {
+			Log.error("You are trying to load non-existing texture: " + name);
+			System.exit(1);
+		}
+		
+		return texture;
+	}
+
 	public static Font getFont(String name) {
 		return fonts.get(name);
+	}
+	
+	public static Shader getShader(String name) {
+		return shaders.get(name);
 	}
 }

@@ -16,7 +16,6 @@ import static org.lwjgl.opengl.GL20.glValidateProgram;
 import graphics.nim.volterra.util.Log;
 
 import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -24,7 +23,7 @@ import java.io.InputStreamReader;
 public class ShaderLoader {
 	public static final int LOG_SIZE = 1024;
 
-	public static int loadShaders(String vertpath, String fragpath) {
+	public static Shader loadShaders(String vertpath, String fragpath) {
 		int vertexShader = loadShader(vertpath, GL_VERTEX_SHADER);
 		int fragmentShader = loadShader(fragpath, GL_FRAGMENT_SHADER);
 		
@@ -36,7 +35,7 @@ public class ShaderLoader {
 		glLinkProgram(program);
 		glValidateProgram(program);
 		
-		return program;
+		return new Shader(program);
 	}
 	
 	private static int loadShader(String filename, int type) {

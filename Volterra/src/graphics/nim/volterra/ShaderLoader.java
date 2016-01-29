@@ -16,6 +16,9 @@ import static org.lwjgl.opengl.GL20.glValidateProgram;
 import graphics.nim.volterra.util.Log;
 
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -38,23 +41,32 @@ public class ShaderLoader {
 		return new Shader(program);
 	}
 	
-	private static int loadShader(String filename, int type) {
+	private static int loadShader(String filepath, int type) {
 		StringBuilder shaderSource = new StringBuilder();
 		
 		int shader = 0;
 		
 		try {
-			InputStream is = BaseGame.class.getClassLoader().getResourceAsStream(filename);
-			//BufferedReader in = new BufferedReader(new FileReader(filename));
-			BufferedReader in = new BufferedReader(new InputStreamReader(is));
+			BufferedReader in;
+			
+			InputStream is = BaseGame.class.getClassLoader().getResourceAsStream(filepath);
+			if (is == null) {
+				File file = new File(filepath);
+				in = new BufferedReader(new FileReader(file));
+			} else {
+				in = new BufferedReader(new InputStreamReader(is));
+			}
+			
 			String line = null;
 			while((line = in.readLine()) != null) {
 				shaderSource.append(line).append("\n");
 			}
 			in.close();
+		} catch (FileNotFoundException e) {
+			Log.error("Couldn't find shader at: " + filepath);
 		} catch(IOException e) {
-			Log.error("Could not load shader from: " + filename);
-		}
+			Log.error("Could not load shader from: " + filepath);
+		} 
 		
 		shader = glCreateShader(type);
 		glShaderSource(shader, shaderSource);

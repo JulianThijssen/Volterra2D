@@ -25,8 +25,8 @@ public class Resources {
 		fonts.put(name, font);
 	}
 	
-	public static void addShader(String name, String path) {
-		Shader shader = ShaderLoader.loadShaders(path + ".vert", path + ".frag");
+	public static void addShader(String name, String vertpath, String fragpath) {
+		Shader shader = ShaderLoader.loadShaders(vertpath, fragpath);
 		shaders.put(name, shader);
 	}
 	

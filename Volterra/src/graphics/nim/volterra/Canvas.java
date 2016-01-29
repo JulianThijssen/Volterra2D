@@ -28,9 +28,7 @@ public class Canvas {
 	private Vector3f color = new Vector3f(1, 1, 1);
 	private Vector3f fontColor = new Vector3f(1, 1, 1);
 	private int quad = ShapeLoader.getQuad();
-	
-	private List<Shader> shaders = new ArrayList<Shader>();
-	
+
 	public Canvas() {
 		font = FontLoader.loadFont("Arial", 50);
 		
@@ -38,12 +36,15 @@ public class Canvas {
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ZERO);
 		
 		//shader = ShaderLoader.loadShaders("unlit.vert", "unlit.frag");
-		Resources.addShader("Unlit", "unlit");
+		Resources.addShader("Unlit", "unlit.vert", "unlit.frag");
 		setShader("Unlit");
 	}
 	
 	public void setShader(String name) {
 		shader = Resources.getShader(name);
+		glUseProgram(shader.handle);
+		glUniformMatrix4fv(glGetUniformLocation(shader.handle, "projMatrix"), false, projMatrix.getBuffer());
+		glUniformMatrix4fv(glGetUniformLocation(shader.handle, "viewMatrix"), false, viewMatrix.getBuffer());
 	}
 	
 	public void setFont(Font font) {

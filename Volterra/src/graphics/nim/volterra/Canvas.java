@@ -90,6 +90,10 @@ public class Canvas {
 		viewMatrix.scale(new Vector3f(zoom, zoom, 1));
 	}
 	
+	public void bindTexture(Texture texture) {
+		glBindTexture(GL_TEXTURE_2D, texture.getHandle());
+	}
+	
 	public void clear() {
 		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(shader.handle);

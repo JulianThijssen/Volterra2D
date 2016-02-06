@@ -1,7 +1,9 @@
 package graphics.nim.volterra;
 
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static org.lwjgl.opengl.GL11.GL_RED;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL11.GL_FLOAT;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
@@ -14,6 +16,8 @@ import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
+import static org.lwjgl.opengl.GL30.GL_R32F;
+
 import graphics.nim.volterra.util.Log;
 import graphics.nim.volterra.util.Timer;
 
@@ -22,6 +26,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 
 import javax.imageio.ImageIO;
 
@@ -70,6 +75,20 @@ public class TextureLoader {
 		int handle = uploadTexture(width, height, buf);
 		
 		return new Texture(handle, width, height);
+	}
+	
+	public static Texture createTex(int width, int height, int internal, int format, int type, float[] pixels) {
+		int handle = glGenTextures();
+		glBindTexture(GL_TEXTURE_2D, handle);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+		FloatBuffer buffer = BufferUtils.createFloatBuffer(pixels.length);
+		buffer.put(pixels);
+		buffer.flip();
+		glTexImage2D(GL_TEXTURE_2D, 0, internal, width, height, 0, format, type, buffer);
+		
+		Texture texture = new Texture(handle, width, height);
+		return texture;
 	}
 	
 	private static int uploadTexture(int width, int height, ByteBuffer buffer) {

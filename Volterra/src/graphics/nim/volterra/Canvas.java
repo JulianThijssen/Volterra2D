@@ -6,8 +6,13 @@ import static org.lwjgl.opengl.GL14.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import javax.imageio.ImageIO;
+
+import org.lwjgl.BufferUtils;
 
 import graphics.nim.volterra.font.FontLoader;
 import graphics.nim.volterra.font.Letter;
@@ -65,6 +70,36 @@ public class Canvas {
 	
 	public void setFontColor(float r, float g, float b) {
 		fontColor.set(r, g, b);
+	}
+	
+	public void takeScreenshot() {
+		glReadBuffer(GL_FRONT);
+
+		int width = Window.width;
+		int height = Window.height;
+		int bpp = 4; // Assuming a 32-bit display with a byte each for red, green, blue, and alpha.
+		ByteBuffer buffer = BufferUtils.createByteBuffer(width * height * bpp);
+		glReadPixels(0, 0, width, height, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+		
+		File file = new File("Screenshot.png");
+		String format = "PNG";
+		BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+
+		for (int x = 0; x < width; x++) {
+			for (int y = 0; y < height; y++) {
+				int i = (x + (width * y)) * bpp;
+				int r = buffer.get(i + 0) & 0xFF;
+				int g = buffer.get(i + 1) & 0xFF;
+				int b = buffer.get(i + 2) & 0xFF;
+				image.setRGB(x, height - (y + 1), (0xFF << 24) | (r << 16) | (g << 8) | b);
+			}
+		}
+		
+		try {
+			ImageIO.write(image, format, file);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public void setBounds(float left, float right, float bottom, float top) {

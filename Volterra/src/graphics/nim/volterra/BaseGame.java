@@ -105,4 +105,8 @@ public abstract class BaseGame {
 	public void setState(int state) {
 		gameState.setState(state);
 	}
+	
+	public void takeScreenshot() {
+		canvas.takeScreenshot();
+	}
 }

@@ -22,6 +22,7 @@ public class ShapeLoader {
 		
 		int[] elements = {0, 1, 2, 2, 1, 3};
 		float[] vertices = {-0.5f, -0.5f, 0, 0.5f, -0.5f, 0, -0.5f, 0.5f, 0, 0.5f, 0.5f, 0};
+		//float[] vertices = {-0.5f, 0, 0, 0.5f, 0, 0, -0.5f, 1, 0, 0.5f, 1, 0};
 		float[] texCoords = {0, 0, 1, 0, 0, 1, 1, 1};
 		
 		FloatBuffer vertexBuffer = BufferUtils.createFloatBuffer(18);
@@ -67,6 +68,7 @@ public class ShapeLoader {
 		
 		int[] elements = {0, 1, 2, 2, 1, 3};
 		float[] vertices = {-0.5f, -0.5f, 0, 0.5f, -0.5f, 0, -0.5f, 0.5f, 0, 0.5f, 0.5f, 0};
+		//float[] vertices = {-0.5f, 0, 0, 0.5f, 0, 0, -0.5f, 1, 0, 0.5f, 1, 0};
 		float[] texCoords = {x1, y1, x2, y1, x1, y2, x2, y2};
 		//float[] texCoords = {0, 0, 1, 0, 0, 1, 1, 1};
 		

@@ -82,10 +82,14 @@ public class TextureLoader {
 		glBindTexture(GL_TEXTURE_2D, handle);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-		FloatBuffer buffer = BufferUtils.createFloatBuffer(pixels.length);
-		buffer.put(pixels);
-		buffer.flip();
-		glTexImage2D(GL_TEXTURE_2D, 0, internal, width, height, 0, format, type, buffer);
+		if (pixels != null) {
+			FloatBuffer buffer = BufferUtils.createFloatBuffer(pixels.length);
+			buffer.put(pixels);
+			buffer.flip();
+			glTexImage2D(GL_TEXTURE_2D, 0, internal, width, height, 0, format, type, buffer);
+		} else {
+			glTexImage2D(GL_TEXTURE_2D, 0, internal, width, height, 0, format, type, (ByteBuffer) null);
+		}
 		
 		Texture texture = new Texture(handle, width, height);
 		return texture;

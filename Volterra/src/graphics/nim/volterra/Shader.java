@@ -6,4 +6,8 @@ public class Shader {
 	public Shader(int handle) {
 		this.handle = handle;
 	}
+	
+	public void location() {
+		
+	}
 }

@@ -70,8 +70,10 @@ public class Input {
 	public static final int KEY_F12       = 301;
 	
 	private static List<KeyListener> keyListeners = new ArrayList<KeyListener>();
+	private static List<MouseMoveListener> mouseMoveListeners = new ArrayList<MouseMoveListener>();
 	private static boolean keys[] = new boolean[400];
 	private static Queue<KeyEvent> events = new ArrayBlockingQueue<KeyEvent>(100);
+	private static Queue<MouseMoveEvent> mouseMoveEvents = new ArrayBlockingQueue<MouseMoveEvent>(100);
 	
 	public static boolean isKeyPressed(int key) {
 		return keys[key];
@@ -99,7 +101,19 @@ public class Input {
 		}
 	}
 	
+	public static void addMouseMoveEvent(float x, float y) {
+		mouseMoveEvents.offer(new MouseMoveEvent(x, y));
+		
+		for (MouseMoveListener listener: mouseMoveListeners) {
+			listener.mouseMoved(x, y);
+		}
+	}
+	
 	public static void addKeyListener(KeyListener listener) {
 		keyListeners.add(listener);
+	}
+	
+	public static void addMouseMoveListener(MouseMoveListener listener) {
+		mouseMoveListeners.add(listener);
 	}
 }

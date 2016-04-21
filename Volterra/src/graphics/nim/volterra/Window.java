@@ -5,6 +5,7 @@ import static org.lwjgl.opengl.GL11.*;
 import graphics.nim.volterra.input.Input;
 
 import org.lwjgl.glfw.GLFWKeyCallback;
+import org.lwjgl.glfw.GLFWCursorPosCallback;
 import org.lwjgl.opengl.GL;
 
 public class Window {
@@ -18,6 +19,7 @@ public class Window {
 	private long window;
 	
 	private KeyCallback keyCallback;
+	private MouseMoveCallback mouseMoveCallback;
 	
 	public Window() {
 		this(DEFAULT_TITLE);
@@ -40,8 +42,11 @@ public class Window {
 		glfwMakeContextCurrent(window);
 		GL.createCapabilities();
 		glfwSwapInterval(0);
+		
 		keyCallback = new KeyCallback();
 		glfwSetKeyCallback(window, keyCallback);
+		mouseMoveCallback = new MouseMoveCallback();
+		glfwSetCursorPosCallback(window, mouseMoveCallback);
 	}
 
 	public void setTitle(String title) {
@@ -87,6 +92,13 @@ public class Window {
 			if (action == GLFW_RELEASE) {
 				Input.addKeyEvent(key, false);
 			}
+		}
+	}
+	
+	private class MouseMoveCallback extends GLFWCursorPosCallback {
+		@Override
+		public void invoke(long window, double x, double y) {
+			Input.addMouseMoveEvent((float) x, (float) y);
 		}
 	}
 }

@@ -48,9 +48,9 @@ public class Canvas {
 	
 	public void setShader(String name) {
 		shader = Resources.getShader(name);
-		glUseProgram(shader.handle);
-		glUniformMatrix4fv(glGetUniformLocation(shader.handle, "projMatrix"), false, projMatrix.getBuffer());
-		glUniformMatrix4fv(glGetUniformLocation(shader.handle, "viewMatrix"), false, viewMatrix.getBuffer());
+		shader.bind();
+		shader.uniformMatrix4f("projMatrix", projMatrix);
+		shader.uniformMatrix4f("viewMatrix", viewMatrix);
 	}
 	
 	public void setFont(Font font) {
@@ -137,9 +137,9 @@ public class Canvas {
 	
 	public void clear() {
 		glClear(GL_COLOR_BUFFER_BIT);
-		glUseProgram(shader.handle);
-		glUniformMatrix4fv(glGetUniformLocation(shader.handle, "projMatrix"), false, projMatrix.getBuffer());
-		glUniformMatrix4fv(glGetUniformLocation(shader.handle, "viewMatrix"), false, viewMatrix.getBuffer());
+		shader.bind();
+		shader.uniformMatrix4f("projMatrix", projMatrix);
+		shader.uniformMatrix4f("viewMatrix", viewMatrix);
 		glActiveTexture(GL_TEXTURE0);
 	}
 	
@@ -155,10 +155,12 @@ public class Canvas {
 		if (frames > 1) {
 			sprite.update();
 		}
+
 		glBindTexture(GL_TEXTURE_2D, sprite.getTextureHandle());
-		glUniform1i(glGetUniformLocation(shader.handle, "hasTexture"), 1);
-		glUniform1i(glGetUniformLocation(shader.handle, "sprite"), 0);
-		glUniform3f(glGetUniformLocation(shader.handle, "color"), color.x, color.y, color.z);
+		
+		shader.uniform1i("hasTexture", 1);
+		shader.uniform1i("sprite", 0);
+		shader.uniform3f("color", color.x, color.y, color.z);
 		
 		modelMatrix.setIdentity();
 		modelMatrix.translate(new Vector3f(t.position.x, t.position.y, t.depth));
@@ -167,7 +169,7 @@ public class Canvas {
 		} else {
 			modelMatrix.scale(new Vector3f(sprite.getWidth() * -t.scale.x, sprite.getHeight() * t.scale.y, 1));
 		}
-		glUniformMatrix4fv(glGetUniformLocation(shader.handle, "modelMatrix"), false, modelMatrix.getBuffer());
+		shader.uniformMatrix4f("modelMatrix", modelMatrix);
 		
 		glBindVertexArray(sprite.getHandle());
 		glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -182,13 +184,13 @@ public class Canvas {
 	}
 	
 	public void drawRect(float x, float y, float w, float h) {
-		glUniform1i(glGetUniformLocation(shader.handle, "hasTexture"), 0);
-		glUniform3f(glGetUniformLocation(shader.handle, "color"), color.x, color.y, color.z);
+		shader.uniform1i("hasTexture", 1);
+		shader.uniform3f("color", color.x, color.y, color.z);
 		
 		modelMatrix.setIdentity();
 		modelMatrix.translate(new Vector3f(x, y, 0));
 		modelMatrix.scale(new Vector3f(w, h, 1));
-		glUniformMatrix4fv(glGetUniformLocation(shader.handle, "modelMatrix"), false, modelMatrix.getBuffer());
+		shader.uniformMatrix4f("modelMatrix", modelMatrix);
 		
 		glBindVertexArray(quad);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -196,14 +198,14 @@ public class Canvas {
 	
 	public void drawImage(float x, float y, float depth, Texture image) {
 		glBindTexture(GL_TEXTURE_2D, image.getHandle());
-		glUniform1i(glGetUniformLocation(shader.handle, "hasTexture"), 1);
-		glUniform1i(glGetUniformLocation(shader.handle, "sprite"), 0);
-		glUniform3f(glGetUniformLocation(shader.handle, "color"), 1, 1, 1);
+		shader.uniform1i("hasTexture", 1);
+		shader.uniform1i("sprite", 0);
+		shader.uniform3f("color", color.x, color.y, color.z);
 		
 		modelMatrix.setIdentity();
 		modelMatrix.translate(new Vector3f(x, y, 0));
 		modelMatrix.scale(new Vector3f(image.getWidth(), image.getHeight(), 1));
-		glUniformMatrix4fv(glGetUniformLocation(shader.handle, "modelMatrix"), false, modelMatrix.getBuffer());
+		shader.uniformMatrix4f("modelMatrix", modelMatrix);
 		
 		glBindVertexArray(quad);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -211,14 +213,14 @@ public class Canvas {
 	
 	public void drawImage(float x, float y, float depth, Sprite sprite) {
 		glBindTexture(GL_TEXTURE_2D, sprite.getTextureHandle());
-		glUniform1i(glGetUniformLocation(shader.handle, "hasTexture"), 1);
-		glUniform1i(glGetUniformLocation(shader.handle, "sprite"), 0);
-		glUniform3f(glGetUniformLocation(shader.handle, "color"), 1, 1, 1);
+		shader.uniform1i("hasTexture", 1);
+		shader.uniform1i("sprite", 0);
+		shader.uniform3f("color", color.x, color.y, color.z);
 		
 		modelMatrix.setIdentity();
 		modelMatrix.translate(new Vector3f(x, y, 0));
 		modelMatrix.scale(new Vector3f(sprite.getWidth(), sprite.getHeight(), 1));
-		glUniformMatrix4fv(glGetUniformLocation(shader.handle, "modelMatrix"), false, modelMatrix.getBuffer());
+		shader.uniformMatrix4f("modelMatrix", modelMatrix);
 		
 		glBindVertexArray(sprite.getHandle());
 		glDrawArrays(GL_TRIANGLES, 0, 6);
@@ -233,15 +235,15 @@ public class Canvas {
 			Letter letter = font.getHandle(c);
 			
 			glBindTexture(GL_TEXTURE_2D, font.spriteSheet.getHandle());
-			glUniform1i(glGetUniformLocation(shader.handle, "hasTexture"), 1);
-			glUniform1i(glGetUniformLocation(shader.handle, "sprite"), 0);
-			glUniform3f(glGetUniformLocation(shader.handle, "color"), fontColor.x, fontColor.y, fontColor.z);
+			shader.uniform1i("hasTexture", 1);
+			shader.uniform1i("sprite", 0);
+			shader.uniform3f("color", color.x, color.y, color.z);
 			
 			modelMatrix.setIdentity();
 			modelMatrix.translate(new Vector3f(x + stride, y, depth));
 			modelMatrix.scale(new Vector3f(letter.width * scale, letter.height * scale, 1));
-			glUniformMatrix4fv(glGetUniformLocation(shader.handle, "modelMatrix"), false, modelMatrix.getBuffer());
-
+			shader.uniformMatrix4f("modelMatrix", modelMatrix);
+			
 			glBindVertexArray(letter.handle);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 			

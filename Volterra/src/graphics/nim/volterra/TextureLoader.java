@@ -90,6 +90,7 @@ public class TextureLoader {
 		} else {
 			glTexImage2D(GL_TEXTURE_2D, 0, internal, width, height, 0, format, type, (ByteBuffer) null);
 		}
+		glBindTexture(GL_TEXTURE_2D, 0);
 		
 		Texture texture = new Texture(handle, width, height);
 		return texture;

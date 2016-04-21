@@ -40,12 +40,8 @@ public class Canvas {
 		font = FontLoader.loadFont("Arial", 50);
 		
 		glEnable(GL_BLEND);
-		//glEnable(GL_DEPTH_TEST);
-		//glEnable(GL_ALPHA_TEST);
-		//glAlphaFunc(GL_GREATER, 0.5f);
 		glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
 		
-		//shader = ShaderLoader.loadShaders("unlit.vert", "unlit.frag");
 		Resources.addShader("Unlit", "unlit.vert", "unlit.frag");
 		setShader("Unlit");
 	}
@@ -110,15 +106,18 @@ public class Canvas {
 	public void setBounds(float left, float right, float bottom, float top) {
 		projMatrix.setIdentity();
 
+		float far = 100;
+		float near = -100;
 		projMatrix.array[0] = 2 / (right - left);
 		projMatrix.array[5] = 2 / (top - bottom);
-		projMatrix.array[10] = -0.001f;
+		projMatrix.array[10] = -2 / (far - near);
 		projMatrix.array[12] = -(right + left) / (right - left);
 		projMatrix.array[13] = -(top + bottom) / (top - bottom);
-		projMatrix.array[14] = 0;
+		projMatrix.array[14] = -(far + near) / (far - near);
+		projMatrix.array[15] = 1;
 		
 		bounds.set(left, right, bottom, top);
-		glViewport(0, 0, (int) (right-left), (int) (top-bottom));
+		glViewport(0, 0, Window.width, Window.height);
 	}
 	
 	public void setCamera(Camera camera) {
@@ -137,11 +136,11 @@ public class Canvas {
 	}
 	
 	public void clear() {
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(shader.handle);
 		glUniformMatrix4fv(glGetUniformLocation(shader.handle, "projMatrix"), false, projMatrix.getBuffer());
 		glUniformMatrix4fv(glGetUniformLocation(shader.handle, "viewMatrix"), false, viewMatrix.getBuffer());
-		glActiveTexture(0);
+		glActiveTexture(GL_TEXTURE0);
 	}
 	
 	public void draw(Entity e) {
@@ -162,7 +161,7 @@ public class Canvas {
 		glUniform3f(glGetUniformLocation(shader.handle, "color"), color.x, color.y, color.z);
 		
 		modelMatrix.setIdentity();
-		modelMatrix.translate(new Vector3f(t.position.x, t.position.y, -t.position.y));
+		modelMatrix.translate(new Vector3f(t.position.x, t.position.y, t.depth));
 		if (!sprite.isFlipped()) {
 			modelMatrix.scale(new Vector3f(sprite.getWidth() * t.scale.x, sprite.getHeight() * t.scale.y, 1));
 		} else {
@@ -202,7 +201,7 @@ public class Canvas {
 		glUniform3f(glGetUniformLocation(shader.handle, "color"), 1, 1, 1);
 		
 		modelMatrix.setIdentity();
-		modelMatrix.translate(new Vector3f(x, y, -y));
+		modelMatrix.translate(new Vector3f(x, y, 0));
 		modelMatrix.scale(new Vector3f(image.getWidth(), image.getHeight(), 1));
 		glUniformMatrix4fv(glGetUniformLocation(shader.handle, "modelMatrix"), false, modelMatrix.getBuffer());
 		
@@ -217,7 +216,7 @@ public class Canvas {
 		glUniform3f(glGetUniformLocation(shader.handle, "color"), 1, 1, 1);
 		
 		modelMatrix.setIdentity();
-		modelMatrix.translate(new Vector3f(x, y, -y));
+		modelMatrix.translate(new Vector3f(x, y, 0));
 		modelMatrix.scale(new Vector3f(sprite.getWidth(), sprite.getHeight(), 1));
 		glUniformMatrix4fv(glGetUniformLocation(shader.handle, "modelMatrix"), false, modelMatrix.getBuffer());
 		

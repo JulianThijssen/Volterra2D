@@ -33,6 +33,9 @@ public class Window {
 		Window.height = height;
 		
 		glfwInit();
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
+		
 		window = glfwCreateWindow(width, height, title, 0, 0);
 		glfwMakeContextCurrent(window);
 		GL.createCapabilities();

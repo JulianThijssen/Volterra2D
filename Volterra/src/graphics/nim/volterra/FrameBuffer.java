@@ -4,6 +4,7 @@ import static org.lwjgl.opengl.GL11.GL_NONE;
 import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glDrawBuffer;
 import static org.lwjgl.opengl.GL11.glReadBuffer;
+import static org.lwjgl.opengl.GL20.glDrawBuffers;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_COMPLETE;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;
@@ -13,10 +14,17 @@ import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_UNDEFINED;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_UNSUPPORTED;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
 import static org.lwjgl.opengl.GL30.glBindFramebuffer;
 import static org.lwjgl.opengl.GL30.glCheckFramebufferStatus;
 import static org.lwjgl.opengl.GL30.glGenFramebuffers;
 import static org.lwjgl.opengl.GL32.glFramebufferTexture;
+
+import java.nio.IntBuffer;
+
+import org.lwjgl.BufferUtils;
+
 import graphics.nim.volterra.util.Log;
 
 public class FrameBuffer {
@@ -50,6 +58,15 @@ public class FrameBuffer {
 	public void disableColor() {
 		glReadBuffer(GL_NONE);
 		glDrawBuffer(GL_NONE);
+	}
+	
+	public void drawBuffers() {
+		IntBuffer drawBuffers = BufferUtils.createIntBuffer(2);
+		drawBuffers.put(GL_COLOR_ATTACHMENT0);
+		drawBuffers.put(GL_COLOR_ATTACHMENT1);
+		drawBuffers.flip();
+		
+		glDrawBuffers(drawBuffers);
 	}
 	
 	public void validate() {

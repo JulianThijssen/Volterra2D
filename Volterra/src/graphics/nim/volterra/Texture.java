@@ -1,5 +1,7 @@
 package graphics.nim.volterra;
 
+import static org.lwjgl.opengl.GL11.*;
+
 public class Texture {
 	private int handle;
 	private int width;
@@ -9,6 +11,14 @@ public class Texture {
 		this.handle = handle;
 		this.width = width;
 		this.height = height;
+	}
+	
+	public void bind() {
+		glBindTexture(GL_TEXTURE_2D, handle);
+	}
+	
+	public void unbind() {
+		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 	
 	public int getHandle() {

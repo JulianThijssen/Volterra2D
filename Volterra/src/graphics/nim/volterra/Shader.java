@@ -32,6 +32,10 @@ public class Shader {
 		return location;
 	}
 	
+	public void uniform1i(String name, int value) {
+		glUniform1i(location(name), value);
+	}
+	
 	public void uniform1f(String name, float value) {
 		glUniform1f(location(name), value);
 	}

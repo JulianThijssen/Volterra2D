@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import graphics.nim.volterra.util.Vector2f;
+
 public class Input {
 	public static final int KEY_SPACE     = 32;
 	public static final int KEY_PERIOD    = 46;
@@ -75,6 +77,8 @@ public class Input {
 	private static Queue<KeyEvent> events = new ArrayBlockingQueue<KeyEvent>(100);
 	private static Queue<MouseMoveEvent> mouseMoveEvents = new ArrayBlockingQueue<MouseMoveEvent>(100);
 	
+	private static Vector2f mousePos = new Vector2f(0, 0);
+	
 	public static boolean isKeyPressed(int key) {
 		return keys[key];
 	}
@@ -85,6 +89,10 @@ public class Input {
 	
 	public static KeyEvent getKeyEvent() {
 		return events.poll();
+	}
+	
+	public static Vector2f getMousePos() {
+		return mousePos;
 	}
 	
 	public static void addKeyEvent(int key, boolean state) {
@@ -102,6 +110,7 @@ public class Input {
 	}
 	
 	public static void addMouseMoveEvent(float x, float y) {
+		mousePos.set(x, y);
 		mouseMoveEvents.offer(new MouseMoveEvent(x, y));
 		
 		for (MouseMoveListener listener: mouseMoveListeners) {

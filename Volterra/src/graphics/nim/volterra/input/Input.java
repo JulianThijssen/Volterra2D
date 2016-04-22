@@ -92,7 +92,7 @@ public class Input {
 	}
 	
 	public static Vector2f getMousePos() {
-		return mousePos;
+		return new Vector2f(mousePos.x, mousePos.y);
 	}
 	
 	public static void addKeyEvent(int key, boolean state) {

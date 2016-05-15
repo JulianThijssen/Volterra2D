@@ -2,7 +2,7 @@ package graphics.nim.volterra;
 
 import graphics.nim.volterra.util.Log;
 
-public class Sprite implements Component {
+public class Sprite {
 	private Texture texture;
 	private int[] vaoArray;
 	

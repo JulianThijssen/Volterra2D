@@ -3,7 +3,6 @@ package graphics.nim.volterra;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.opengl.GL13.*;
 import static org.lwjgl.opengl.GL14.*;
-import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
 import java.awt.image.BufferedImage;
@@ -17,7 +16,6 @@ import org.lwjgl.BufferUtils;
 
 import graphics.nim.volterra.font.FontLoader;
 import graphics.nim.volterra.font.Letter;
-import graphics.nim.volterra.gui.Button;
 import graphics.nim.volterra.util.Matrix4f;
 import graphics.nim.volterra.util.Vector2f;
 import graphics.nim.volterra.util.Vector3f;
@@ -143,46 +141,6 @@ public class Canvas {
 		glActiveTexture(GL_TEXTURE0);
 	}
 	
-	public void draw(Entity e) {
-		Transform t = e.getComponent(Transform.class);
-		Sprite sprite = e.getComponent(Sprite.class);
-		
-		if (sprite == null) {
-			return;
-		}
-		
-		int frames = sprite.getNumFrames();
-		if (frames > 1) {
-			sprite.update();
-		}
-
-		glBindTexture(GL_TEXTURE_2D, sprite.getTextureHandle());
-		
-		shader.uniform1i("hasTexture", 1);
-		shader.uniform1i("sprite", 0);
-		shader.uniform3f("color", color.x, color.y, color.z);
-		
-		modelMatrix.setIdentity();
-		modelMatrix.translate(new Vector3f(t.position.x, t.position.y, t.depth));
-		if (!sprite.isFlipped()) {
-			modelMatrix.scale(new Vector3f(sprite.getWidth() * t.scale.x, sprite.getHeight() * t.scale.y, 1));
-		} else {
-			modelMatrix.scale(new Vector3f(sprite.getWidth() * -t.scale.x, sprite.getHeight() * t.scale.y, 1));
-		}
-		shader.uniformMatrix4f("modelMatrix", modelMatrix);
-		
-		glBindVertexArray(sprite.getHandle());
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-	}
-	
-	public void drawButton(Button b) {
-		Transform t = b.getComponent(Transform.class);
-		
-		Texture texture = b.getTexture();
-		
-		drawImage(t.position.x, t.position.y, 1, texture);
-	}
-	
 	public void drawRect(float x, float y, float w, float h) {
 		shader.uniform1i("hasTexture", 1);
 		shader.uniform3f("color", color.x, color.y, color.z);
@@ -210,16 +168,25 @@ public class Canvas {
 		glBindVertexArray(quad);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
-	
+
 	public void drawImage(float x, float y, float depth, Sprite sprite) {
 		glBindTexture(GL_TEXTURE_2D, sprite.getTextureHandle());
 		shader.uniform1i("hasTexture", 1);
 		shader.uniform1i("sprite", 0);
 		shader.uniform3f("color", color.x, color.y, color.z);
 		
+		int frames = sprite.getNumFrames();
+		if (frames > 1) {
+			sprite.update();
+		}
+		
 		modelMatrix.setIdentity();
 		modelMatrix.translate(new Vector3f(x, y, 0));
-		modelMatrix.scale(new Vector3f(sprite.getWidth(), sprite.getHeight(), 1));
+		if (!sprite.isFlipped()) {
+			modelMatrix.scale(new Vector3f(sprite.getWidth(), sprite.getHeight(), 1));
+		} else {
+			modelMatrix.scale(new Vector3f(-sprite.getWidth(), sprite.getHeight(), 1));
+		}
 		shader.uniformMatrix4f("modelMatrix", modelMatrix);
 		
 		glBindVertexArray(sprite.getHandle());

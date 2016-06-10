@@ -75,6 +75,10 @@ public class Vector2f {
 		return new Vector2f(v.x * scale, v.y * scale);
 	}
 	
+	public static float dot(Vector2f v1, Vector2f v2) {
+		return v1.x * v2.x + v1.y * v2.y;
+	}
+	
 	public static Vector2f negate(Vector2f v) {
 		return new Vector2f(-v.x, -v.y);
 	}

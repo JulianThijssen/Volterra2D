@@ -73,8 +73,10 @@ public class Input {
 	
 	private static List<KeyListener> keyListeners = new ArrayList<KeyListener>();
 	private static List<MouseMoveListener> mouseMoveListeners = new ArrayList<MouseMoveListener>();
+	private static List<MouseClickListener> mouseClickListeners = new ArrayList<MouseClickListener>();
 	private static boolean keys[] = new boolean[400];
 	private static Queue<KeyEvent> events = new ArrayBlockingQueue<KeyEvent>(100);
+	private static Queue<MouseEvent> mouseEvents = new ArrayBlockingQueue<MouseEvent>(100);
 	private static Queue<MouseMoveEvent> mouseMoveEvents = new ArrayBlockingQueue<MouseMoveEvent>(100);
 	
 	private static Vector2f mousePos = new Vector2f(0, 0);
@@ -87,8 +89,16 @@ public class Input {
 		return events.size() > 0;
 	}
 	
+	public static boolean hasMouseEvents() {
+		return mouseEvents.size() > 0;
+	}
+	
 	public static KeyEvent getKeyEvent() {
 		return events.poll();
+	}
+	
+	public static MouseEvent getMouseEvent() {
+		return mouseEvents.poll();
 	}
 	
 	public static Vector2f getMousePos() {
@@ -118,11 +128,23 @@ public class Input {
 		}
 	}
 	
+	public static void addMouseClickEvent(int button, int action) {
+		mouseEvents.offer(new MouseEvent(button, action));
+		
+		for (MouseClickListener listener: mouseClickListeners) {
+			listener.mouseClicked(button, action);
+		}
+	}
+	
 	public static void addKeyListener(KeyListener listener) {
 		keyListeners.add(listener);
 	}
 	
 	public static void addMouseMoveListener(MouseMoveListener listener) {
 		mouseMoveListeners.add(listener);
+	}
+	
+	public static void addMouseClickListener(MouseClickListener listener) {
+		mouseClickListeners.add(listener);
 	}
 }

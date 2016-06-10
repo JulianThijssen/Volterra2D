@@ -142,7 +142,7 @@ public class Canvas {
 	}
 	
 	public void drawRect(float x, float y, float w, float h) {
-		shader.uniform1i("hasTexture", 1);
+		shader.uniform1i("hasTexture", 0);
 		shader.uniform3f("color", color.x, color.y, color.z);
 		
 		modelMatrix.setIdentity();

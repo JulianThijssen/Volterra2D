@@ -5,6 +5,7 @@ import java.util.List;
 
 public class StateMachine {
 	private List<State> states = new ArrayList<State>();
+
 	private State currentState;
 	
 	public void addState(State state) {
@@ -12,6 +13,10 @@ public class StateMachine {
 			currentState = state;
 		}
 		states.add(state);
+	}
+	
+	public boolean inState(int state) {
+		return currentState.getId() == state;
 	}
 	
 	public State getState() {

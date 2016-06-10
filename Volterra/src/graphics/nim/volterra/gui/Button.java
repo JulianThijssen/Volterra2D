@@ -2,8 +2,11 @@ package graphics.nim.volterra.gui;
 
 import graphics.nim.volterra.Entity;
 import graphics.nim.volterra.Texture;
+import graphics.nim.volterra.util.Vector2f;
 
 public class Button extends Entity {
+	public Vector2f position = new Vector2f(0, 0);
+	
 	private String label;
 	private boolean pressed = false;
 	

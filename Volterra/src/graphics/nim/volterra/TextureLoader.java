@@ -47,7 +47,7 @@ public class TextureLoader {
 		int handle = uploadTexture(buffer, w.get(0), h.get(0), c.get(0));
 		
 		t.stop();
-		System.out.println("STB: " + t.getElapsedNano());
+		Log.debug(path + " loaded in: " + t.getElapsedNano() + "ns");
 		
 		return new Texture(handle, w.get(0), h.get(0));
 	}

@@ -175,13 +175,13 @@ public class Canvas {
 		shader.uniform1i("sprite", 0);
 		shader.uniform3f("color", color.x, color.y, color.z);
 		
-		int frames = sprite.getNumFrames();
-		if (frames > 1) {
+		if (sprite.isAnimation()) {
 			sprite.update();
 		}
 		
 		modelMatrix.setIdentity();
 		modelMatrix.translate(new Vector3f(x, y, 0));
+		modelMatrix.rotate(new Vector3f(0, 0, sprite.rotation));
 		if (!sprite.isFlipped()) {
 			modelMatrix.scale(new Vector3f(sprite.getWidth(), sprite.getHeight(), 1));
 		} else {

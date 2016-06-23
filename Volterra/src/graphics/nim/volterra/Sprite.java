@@ -14,7 +14,9 @@ public class Sprite {
 	private float time = 0;
 	private float length = 1;
 	
+	public float rotation = 0;
 	private boolean flipped = false;
+	private boolean animation = false;
 	
 	public Sprite(Texture texture) {
 		this.texture = texture;
@@ -45,6 +47,10 @@ public class Sprite {
 			float y2 = y1 + (frameHeight / (float)texture.getHeight()) - (0.5f / (float)texture.getHeight());
 			System.out.printf("%f, %f, %f, %f\n", x1, y1, x2, y2);
 			vaoArray[i] = ShapeLoader.getSubQuad(x1, y1, x2, y2);
+		}
+		
+		if (clipLength > 0.0001f) {
+			animation = true;
 		}
 	}
 	
@@ -83,12 +89,16 @@ public class Sprite {
 	public int getNumFrames() {
 		return numFrames;
 	}
-	
+
 	public boolean isFlipped() {
 		return flipped;
 	}
 	
 	public void flip(boolean flip) {
 		flipped = flip;
+	}
+	
+	public boolean isAnimation() {
+		return animation;
 	}
 }

@@ -1,24 +1,14 @@
-import graphics.nim.volterra.Entity;
 import graphics.nim.volterra.Resources;
 import graphics.nim.volterra.Sprite;
-import graphics.nim.volterra.Transform;
 
 public class EntityFactory {
-	public static Entity createPaddle(int x, int y) {
-		Entity e = new Entity();
-		e.addComponent(new Transform(x, y, 0));
-		e.addComponent(new Velocity(0, 0));
-		e.addComponent(new Sprite(Resources.getTexture("Paddle")));
-		
-		return e;
+	public static Paddle createPaddle(int x, int y) {
+		Sprite sprite = new Sprite(Resources.getTexture("Paddle"), 16, 64, 0);
+		return new Paddle(sprite, x, y);
 	}
 	
-	public static Entity createBall(int x, int y) {
-		Entity e = new Entity();
-		e.addComponent(new Transform(x, y, 0));
-		e.addComponent(new Velocity(0, 0));
-		e.addComponent(new Sprite(Resources.getTexture("BallSheet"), 16, 16, 1));
-		
-		return e;
+	public static Ball createBall(int x, int y) {
+		Sprite sprite = new Sprite(Resources.getTexture("BallSheet"), 16, 16, 1);
+		return new Ball(sprite, x, y);
 	}
 }

@@ -11,8 +11,8 @@ public class Application extends BaseGame implements KeyListener {
 	
 	@Override
 	public void init() {
-		addGameState(new Menu(MENU));
-		addGameState(new Game(GAME));
+		addGameState(new Menu(MENU, this));
+		addGameState(new Game(GAME, this));
 		//setState(GAME);
 		
 		Input.addKeyListener(this);

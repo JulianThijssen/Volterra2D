@@ -1,10 +1,11 @@
+import graphics.nim.volterra.BaseGame;
 import graphics.nim.volterra.Canvas;
 import graphics.nim.volterra.GameState;
 import graphics.nim.volterra.Resources;
 
 public class Menu extends GameState {
-	public Menu(int id) {
-		super(id);
+	public Menu(int id, BaseGame game) {
+		super(id, game);
 	}
 
 	@Override

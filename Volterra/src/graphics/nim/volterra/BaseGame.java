@@ -2,7 +2,6 @@ package graphics.nim.volterra;
 
 public abstract class BaseGame {
 	private Window window;
-	private Scene scene;
 	private Canvas canvas;
 	
 	private long maxSkip = 15;
@@ -32,10 +31,6 @@ public abstract class BaseGame {
 		
 		load();
 		tick();
-	}
-	
-	public void setScene(Scene scene) {
-		this.scene = scene;
 	}
 	
 	private void tick() {

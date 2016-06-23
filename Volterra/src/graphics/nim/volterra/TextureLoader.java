@@ -1,7 +1,9 @@
 package graphics.nim.volterra;
 
 import static org.lwjgl.opengl.GL11.GL_NEAREST;
+import static org.lwjgl.opengl.GL11.GL_RGB;
 import static org.lwjgl.opengl.GL11.GL_RGBA;
+import static org.lwjgl.opengl.GL11.GL_RGBA8;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_2D;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_MAG_FILTER;
 import static org.lwjgl.opengl.GL11.GL_TEXTURE_MIN_FILTER;
@@ -14,8 +16,6 @@ import static org.lwjgl.opengl.GL11.glTexImage2D;
 import static org.lwjgl.opengl.GL11.glTexParameteri;
 import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
-import graphics.nim.volterra.util.Log;
-import graphics.nim.volterra.util.Timer;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -23,10 +23,15 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 
 import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
+import org.lwjgl.stb.STBImage;
+
+import graphics.nim.volterra.util.Log;
+import graphics.nim.volterra.util.Timer;
 
 public class TextureLoader {
 	public static Texture load(String path) {
@@ -43,10 +48,8 @@ public class TextureLoader {
 			buf.put((byte[]) image.getRaster().getDataElements(0, 0, width, height, null));
 			buf.flip();
 
-			int handle = uploadTexture(width, height, buf);
-			
-			t.stop();
-			System.out.println(t.getElapsed());
+			int handle = uploadTexture(buf, width, height, 4);
+
 			return new Texture(handle, width, height);
 		} catch (FileNotFoundException e) {
 			Log.error("Image was not found: " + path);
@@ -55,6 +58,29 @@ public class TextureLoader {
 		}
 		
 		return null;
+	}
+	
+	public static Texture loadSTB(String path) {
+		Timer t = new Timer();
+
+		t.start();
+
+        IntBuffer w = BufferUtils.createIntBuffer(1);
+        IntBuffer h = BufferUtils.createIntBuffer(1);
+        IntBuffer c = BufferUtils.createIntBuffer(1);
+        
+		ByteBuffer buffer = STBImage.stbi_load(path, w, h, c, 0);
+
+		if (buffer == null) {
+			Log.error("Failed to load texture at path: " + path);
+		}
+
+		int handle = uploadTexture(buffer, w.get(0), h.get(0), c.get(0));
+		
+		t.stop();
+		System.out.println(t.getElapsed());
+		
+		return new Texture(handle, w.get(0), h.get(0));
 	}
 	
 	public static Texture load(BufferedImage image) {
@@ -68,7 +94,7 @@ public class TextureLoader {
 		buf.put((byte[]) o);
 		buf.flip();
 
-		int handle = uploadTexture(width, height, buf);
+		int handle = uploadTexture(buf, width, height, 4);
 		
 		return new Texture(handle, width, height);
 	}
@@ -92,12 +118,17 @@ public class TextureLoader {
 		return texture;
 	}
 	
-	private static int uploadTexture(int width, int height, ByteBuffer buffer) {
+	private static int uploadTexture(ByteBuffer buffer, int width, int height, int components) {
 		int handle = glGenTextures();
 		glBindTexture(GL_TEXTURE_2D, handle);
 
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
-		
+		if (components == 4) {
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, buffer);
+		}
+		else if (components == 3) {
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, buffer);
+		}
+
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 		

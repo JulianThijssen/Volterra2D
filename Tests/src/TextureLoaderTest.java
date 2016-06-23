@@ -12,7 +12,7 @@ public class TextureLoaderTest {
 	public void test() {
 		Window window = new Window();
 		
-		Texture tex = TextureLoader.loadSTB("res/Test_sPNG.png");
+		Texture tex = TextureLoader.load("res/Test_PNG.png");
 		assertTrue(tex.getWidth() > 0);
 		assertTrue(tex.getHeight() > 0);
 	}

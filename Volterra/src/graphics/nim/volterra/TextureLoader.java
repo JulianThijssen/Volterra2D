@@ -57,6 +57,9 @@ public class TextureLoader {
 			Log.error("An error occurred while loading the image: " + path);
 		}
 		
+		t.stop();
+		System.out.println(t.getElapsedNano());
+		
 		return null;
 	}
 	
@@ -78,7 +81,7 @@ public class TextureLoader {
 		int handle = uploadTexture(buffer, w.get(0), h.get(0), c.get(0));
 		
 		t.stop();
-		System.out.println(t.getElapsed());
+		System.out.println(t.getElapsedNano());
 		
 		return new Texture(handle, w.get(0), h.get(0));
 	}

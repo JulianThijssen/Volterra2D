@@ -5,14 +5,18 @@ public class Timer {
 	private long endTime = 0;
 	
 	public void start() {
-		startTime = System.currentTimeMillis();
+		startTime = System.nanoTime();
 	}
 	
 	public void stop() {
-		endTime = System.currentTimeMillis();
+		endTime = System.nanoTime();
 	}
 	
-	public long getElapsed() {
+	public long getElapsedMillis() {
+		return (endTime - startTime) / 1000000;
+	}
+	
+	public long getElapsedNano() {
 		return endTime - startTime;
 	}
 }

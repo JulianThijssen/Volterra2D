@@ -18,14 +18,9 @@ import static org.lwjgl.opengl.GL12.GL_CLAMP_TO_EDGE;
 import static org.lwjgl.opengl.GL30.glGenerateMipmap;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
-
-import javax.imageio.ImageIO;
 
 import org.lwjgl.BufferUtils;
 import org.lwjgl.stb.STBImage;
@@ -35,35 +30,6 @@ import graphics.nim.volterra.util.Timer;
 
 public class TextureLoader {
 	public static Texture load(String path) {
-		Timer t = new Timer();
-
-		try {
-			t.start();
-			BufferedImage image = ImageIO.read(new File(path));
-			int width = image.getWidth();
-			int height = image.getHeight();
-
-			// TODO Check if buffered image has alpha and change the 4 parameter
-			ByteBuffer buf = BufferUtils.createByteBuffer(width * height * 4);
-			buf.put((byte[]) image.getRaster().getDataElements(0, 0, width, height, null));
-			buf.flip();
-
-			int handle = uploadTexture(buf, width, height, 4);
-
-			return new Texture(handle, width, height);
-		} catch (FileNotFoundException e) {
-			Log.error("Image was not found: " + path);
-		} catch (IOException e) {
-			Log.error("An error occurred while loading the image: " + path);
-		}
-		
-		t.stop();
-		System.out.println(t.getElapsedNano());
-		
-		return null;
-	}
-	
-	public static Texture loadSTB(String path) {
 		Timer t = new Timer();
 
 		t.start();
@@ -81,7 +47,7 @@ public class TextureLoader {
 		int handle = uploadTexture(buffer, w.get(0), h.get(0), c.get(0));
 		
 		t.stop();
-		System.out.println(t.getElapsedNano());
+		System.out.println("STB: " + t.getElapsedNano());
 		
 		return new Texture(handle, w.get(0), h.get(0));
 	}

@@ -5,6 +5,8 @@ import static org.lwjgl.opengl.GL11.glClearColor;
 import static org.lwjgl.opengl.GL11.glDrawBuffer;
 import static org.lwjgl.opengl.GL11.glReadBuffer;
 import static org.lwjgl.opengl.GL20.glDrawBuffers;
+import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
+import static org.lwjgl.opengl.GL30.GL_DEPTH_ATTACHMENT;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_COMPLETE;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_INCOMPLETE_ATTACHMENT;
@@ -14,23 +16,37 @@ import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_INCOMPLETE_MULTISAMPLE;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_INCOMPLETE_READ_BUFFER;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_UNDEFINED;
 import static org.lwjgl.opengl.GL30.GL_FRAMEBUFFER_UNSUPPORTED;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT0;
-import static org.lwjgl.opengl.GL30.GL_COLOR_ATTACHMENT1;
+import static org.lwjgl.opengl.GL30.GL_RENDERBUFFER;
+import static org.lwjgl.opengl.GL30.GL_STENCIL_ATTACHMENT;
 import static org.lwjgl.opengl.GL30.glBindFramebuffer;
+import static org.lwjgl.opengl.GL30.glBindRenderbuffer;
 import static org.lwjgl.opengl.GL30.glCheckFramebufferStatus;
+import static org.lwjgl.opengl.GL30.glFramebufferRenderbuffer;
 import static org.lwjgl.opengl.GL30.glGenFramebuffers;
+import static org.lwjgl.opengl.GL30.glGenRenderbuffers;
+import static org.lwjgl.opengl.GL30.glRenderbufferStorage;
 import static org.lwjgl.opengl.GL32.glFramebufferTexture;
 
 import java.nio.IntBuffer;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.BufferUtils;
 
 import graphics.nim.volterra.util.Log;
 
 public class FrameBuffer {
+	private int width, height;
+	
 	private int handle;
 	
-	public FrameBuffer() {
+	private List<Texture> colorTextures = new ArrayList<Texture>();
+	private int depthTex = -1;
+	
+	public FrameBuffer(int width, int height) {
+		this.width = width;
+		this.height = height;
+		
 		handle = glGenFramebuffers();
 	}
 	
@@ -42,10 +58,22 @@ public class FrameBuffer {
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	}
 	
-	public void setTexture(int attachment, int texture) {
-		glFramebufferTexture(GL_FRAMEBUFFER, attachment, texture, 0);
+	public Texture getColorTexture(int i) {
+		return colorTextures.get(i);
 	}
-
+	
+	public void addColorTexture(int internal, int format, int type) {
+		Texture colorTex = TextureLoader.createTex(width, height, internal, format, type, null);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + colorTextures.size(), colorTex.getHandle(), 0);
+		colorTextures.add(colorTex);
+	}
+	
+	public void addDepthTexture(int internal) {
+		depthTex = glGenRenderbuffers();
+	    glBindRenderbuffer(GL_RENDERBUFFER, depthTex);
+	    glRenderbufferStorage(GL_RENDERBUFFER, internal, width, height);
+	}
+	
 	public void setClearColor(float red, float green, float blue, float alpha) {
 		glClearColor(red, green, blue, alpha);
 	}
@@ -61,12 +89,18 @@ public class FrameBuffer {
 	}
 	
 	public void drawBuffers() {
-		IntBuffer drawBuffers = BufferUtils.createIntBuffer(2);
-		drawBuffers.put(GL_COLOR_ATTACHMENT0);
-		drawBuffers.put(GL_COLOR_ATTACHMENT1);
+		IntBuffer drawBuffers = BufferUtils.createIntBuffer(colorTextures.size());
+		for (int i = 0; i < colorTextures.size(); i++) {
+			drawBuffers.put(GL_COLOR_ATTACHMENT0 + i);
+		}
 		drawBuffers.flip();
 		
 		glDrawBuffers(drawBuffers);
+		
+		if (depthTex != -1) {
+		    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, depthTex);
+		    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depthTex);
+		}
 	}
 	
 	public void validate() {

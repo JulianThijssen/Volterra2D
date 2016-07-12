@@ -21,6 +21,10 @@ import graphics.nim.volterra.util.Vector2f;
 import graphics.nim.volterra.util.Vector3f;
 
 public class Canvas {
+	private static final float Z_NEAR = -1000;
+	private static final float Z_FAR = 1000;
+	private static final float Z_RANGE = Z_FAR - Z_NEAR;
+	
 	private Shader shader;
 	
 	private Matrix4f projMatrix = new Matrix4f();
@@ -104,14 +108,12 @@ public class Canvas {
 	public void setBounds(float left, float right, float bottom, float top) {
 		projMatrix.setIdentity();
 
-		float far = 100;
-		float near = -100;
 		projMatrix.array[0] = 2 / (right - left);
 		projMatrix.array[5] = 2 / (top - bottom);
-		projMatrix.array[10] = -2 / (far - near);
+		projMatrix.array[10] = -2 / (Z_RANGE);
 		projMatrix.array[12] = -(right + left) / (right - left);
 		projMatrix.array[13] = -(top + bottom) / (top - bottom);
-		projMatrix.array[14] = -(far + near) / (far - near);
+		projMatrix.array[14] = -(Z_FAR + Z_NEAR) / (Z_RANGE);
 		projMatrix.array[15] = 1;
 		
 		bounds.set(left, right, bottom, top);
@@ -134,7 +136,7 @@ public class Canvas {
 	}
 	
 	public void clear() {
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		shader.bind();
 		shader.uniformMatrix4f("projMatrix", projMatrix);
 		shader.uniformMatrix4f("viewMatrix", viewMatrix);
@@ -161,7 +163,7 @@ public class Canvas {
 		shader.uniform3f("color", color.x, color.y, color.z);
 		
 		modelMatrix.setIdentity();
-		modelMatrix.translate(new Vector3f(x, y, 0));
+		modelMatrix.translate(new Vector3f(x, y, -depth / Z_RANGE));
 		modelMatrix.scale(new Vector3f(image.getWidth(), image.getHeight(), 1));
 		shader.uniformMatrix4f("modelMatrix", modelMatrix);
 		
@@ -179,8 +181,9 @@ public class Canvas {
 			sprite.update();
 		}
 		
+		Vector2f pivot = sprite.getPivot();
 		modelMatrix.setIdentity();
-		modelMatrix.translate(new Vector3f(x, y, 0));
+		modelMatrix.translate(new Vector3f(x - pivot.x, y - pivot.y, -depth / Z_RANGE));
 		modelMatrix.rotate(new Vector3f(0, 0, sprite.rotation));
 		if (!sprite.isFlipped()) {
 			modelMatrix.scale(new Vector3f(sprite.getWidth(), sprite.getHeight(), 1));

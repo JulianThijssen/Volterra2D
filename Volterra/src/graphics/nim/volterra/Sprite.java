@@ -1,6 +1,7 @@
 package graphics.nim.volterra;
 
 import graphics.nim.volterra.util.Log;
+import graphics.nim.volterra.util.Vector2f;
 
 public class Sprite {
 	private Texture texture;
@@ -8,6 +9,8 @@ public class Sprite {
 	
 	private int width;
 	private int height;
+	
+	private Vector2f pivot = new Vector2f(0, 0);
 	
 	private int currentFrame = 0;
 	private int numFrames = 1;
@@ -70,11 +73,19 @@ public class Sprite {
 		return height;
 	}
 	
+	public Vector2f getPivot() {
+		return pivot;
+	}
+	
 	public void setCurrentFrame(int frame) {
 		if (frame < 0 || frame >= numFrames) {
 			Log.error("Tried to open frame " + frame + " on sprite, but it's out of range.");
 		}
 		this.currentFrame = frame;
+	}
+	
+	public void setPivot(int xOffset, int yOffset) {
+		pivot.set((float) xOffset, (float) yOffset);
 	}
 	
 	public void update() {

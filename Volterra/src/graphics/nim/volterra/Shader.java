@@ -7,7 +7,7 @@ import graphics.nim.volterra.util.Matrix4f;
 import static org.lwjgl.opengl.GL20.*;
 
 public class Shader {
-	public int handle;
+	private int handle;
 	
 	private HashMap<String, Integer> locationMap = new HashMap<String, Integer>();
 	

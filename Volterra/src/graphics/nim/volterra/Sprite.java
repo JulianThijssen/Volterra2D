@@ -20,6 +20,9 @@ public class Sprite {
 	public float rotation = 0;
 	private boolean flipped = false;
 	private boolean animation = false;
+	private boolean playing = false;
+	private boolean looping = false;
+	private boolean finished = false;
 	
 	public Sprite(Texture texture) {
 		this.texture = texture;
@@ -88,13 +91,46 @@ public class Sprite {
 		pivot.set((float) xOffset, (float) yOffset);
 	}
 	
-	public void update() {
-		time += Time.renderTime;
-		
-		if (time > length / numFrames) {
-			this.currentFrame = (currentFrame + 1) % numFrames;
-			time = 0;
+	public void play() {
+		if (playing) {
+			return;
 		}
+		time = 0;
+		finished = false;
+		playing = true;
+	}
+	
+	public void stop() {
+		playing = false;
+		finished = true;
+	}
+	
+	public void update() {
+		if (playing) {
+			time += Time.renderTime;
+			
+			if (time > length) {
+				time = length - 0.001f;
+				
+				if (looping) {
+					stop();
+					play();
+				} else {
+					stop();
+				}
+			}
+		}
+		
+		float f = time / length;
+		setCurrentFrame((int) (f * numFrames));
+	}
+	
+	public void setLooping(boolean looping) {
+		this.looping = looping;
+	}
+	
+	public boolean isFinished() {
+		return finished;
 	}
 	
 	public int getNumFrames() {

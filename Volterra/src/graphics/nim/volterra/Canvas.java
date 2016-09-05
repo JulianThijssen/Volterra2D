@@ -16,6 +16,7 @@ import org.lwjgl.BufferUtils;
 
 import graphics.nim.volterra.font.FontLoader;
 import graphics.nim.volterra.font.Letter;
+import graphics.nim.volterra.util.Color;
 import graphics.nim.volterra.util.Matrix4f;
 import graphics.nim.volterra.util.Vector2f;
 import graphics.nim.volterra.util.Vector3f;
@@ -42,7 +43,7 @@ public class Canvas {
 	private Bounds bounds = new Bounds(-1, 1, -1, 1);
 	
 	/** The current color with which all shapes are drawn.*/
-	private Vector3f color = new Vector3f(1, 1, 1);
+	private Color color = new Color(1, 1, 1, 1);
 	
 	/** The currently bound font with which text is drawn.*/
 	private Font font;
@@ -108,9 +109,10 @@ public class Canvas {
 	 * @param r The red component of the color in the range [0-1].
 	 * @param g The green component of the color in the range [0-1].
 	 * @param b The blue component of the color in the range [0-1].
+	 * @param a The alpha component of the color in the range [0-1].
 	 */
-	public void setColor(float r, float g, float b) {
-		color.set(r, g, b);
+	public void setColor(float r, float g, float b, float a) {
+		color.set(r, g, b, a);
 	}
 	
 	/**
@@ -224,6 +226,17 @@ public class Canvas {
 	}
 	
 	/**
+	 * Clears the color and depth buffer
+	 */
+	public void clearDepth() {
+		glClear(GL_DEPTH_BUFFER_BIT);
+		shader.bind();
+		shader.uniformMatrix4f("projMatrix", projMatrix);
+		shader.uniformMatrix4f("viewMatrix", viewMatrix);
+		glActiveTexture(GL_TEXTURE0);
+	}
+	
+	/**
 	 * Draws a rectangle at position x,y with size w x h.
 	 * The color of the rectangle can be set with {@link #setColor(float, float, float) setColor}.
 	 * 
@@ -248,7 +261,7 @@ public class Canvas {
 	 */
 	public void drawRect(float x, float y, float d, float w, float h) {
 		shader.uniform1i("hasTexture", 0);
-		shader.uniform3f("color", color.x, color.y, color.z);
+		shader.uniform4f("color", color.r, color.g, color.b, color.a);
 		
 		modelMatrix.setIdentity();
 		modelMatrix.translate(new Vector3f(x, y, d));
@@ -271,7 +284,7 @@ public class Canvas {
 		glBindTexture(GL_TEXTURE_2D, image.getHandle());
 		shader.uniform1i("hasTexture", 1);
 		shader.uniform1i("sprite", 0);
-		shader.uniform3f("color", color.x, color.y, color.z);
+		shader.uniform4f("color", color.r, color.g, color.b, color.a);
 		
 		modelMatrix.setIdentity();
 		modelMatrix.translate(new Vector3f(x, y, -depth / Z_RANGE));
@@ -294,7 +307,7 @@ public class Canvas {
 		glBindTexture(GL_TEXTURE_2D, sprite.getTextureHandle());
 		shader.uniform1i("hasTexture", 1);
 		shader.uniform1i("sprite", 0);
-		shader.uniform3f("color", color.x, color.y, color.z);
+		shader.uniform4f("color", color.r, color.g, color.b, color.a);
 		
 		if (sprite.isAnimation()) {
 			sprite.update();
@@ -335,7 +348,7 @@ public class Canvas {
 			glBindTexture(GL_TEXTURE_2D, font.spriteSheet.getHandle());
 			shader.uniform1i("hasTexture", 1);
 			shader.uniform1i("sprite", 0);
-			shader.uniform3f("color", color.x, color.y, color.z);
+			shader.uniform4f("color", color.r, color.g, color.b, color.a);
 			
 			modelMatrix.setIdentity();
 			modelMatrix.translate(new Vector3f(x + stride, y, depth));

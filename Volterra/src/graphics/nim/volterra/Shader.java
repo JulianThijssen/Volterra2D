@@ -44,6 +44,10 @@ public class Shader {
 		glUniform3f(location(name), v0, v1, v2);
 	}
 	
+	public void uniform4f(String name, float v0, float v1, float v2, float v3) {
+		glUniform4f(location(name), v0, v1, v2, v3);
+	}
+	
 	public void uniformMatrix4f(String name, Matrix4f m) {
 		glUniformMatrix4fv(location(name), false, m.getBuffer());
 	}

@@ -30,7 +30,7 @@ public class Sprite {
 		this.height = texture.getHeight();
 		
 		vaoArray = new int[numFrames];
-		vaoArray[0] = ShapeLoader.getSubQuad(0, 0, 1, 1);
+		vaoArray[0] = ShapeLoader.getQuad();
 	}
 	
 	public Sprite(Texture texture, int frameWidth, int frameHeight, float clipLength) {
@@ -42,22 +42,19 @@ public class Sprite {
 		int numFramesX = texture.getWidth() / width;
 		int numFramesY = texture.getHeight() / height;
 		numFrames = numFramesX * numFramesY;
-		System.out.println("Num Frames: " + numFrames);
 		vaoArray = new int[numFrames];
-		System.out.println("Tex dims: " + texture.getWidth() + " x " + texture.getHeight());
-		System.out.println("Frame dims: " + frameWidth + " x " + frameHeight);
+
 		for (int i = 0; i < numFrames; i++) {
 			float x1 = (((frameWidth * i) % texture.getWidth()) / (float)texture.getWidth()) + (0.5f / (float)texture.getWidth());
 			float y1 = ((frameHeight * i) % texture.getHeight()) / (float)texture.getHeight() + (0.5f / (float)texture.getHeight());
 			float x2 = x1 + (frameWidth / (float)texture.getWidth()) - (0.5f / (float)texture.getWidth());
 			float y2 = y1 + (frameHeight / (float)texture.getHeight()) - (0.5f / (float)texture.getHeight());
-			System.out.printf("%f, %f, %f, %f\n", x1, y1, x2, y2);
 			vaoArray[i] = ShapeLoader.getSubQuad(x1, y1, x2, y2);
 		}
+		setLength(clipLength);
 		
-		if (clipLength > 0.0001f) {
-			animation = true;
-		}
+		Log.debug("New sprite created!");
+		Log.debug(this.toString());
 	}
 	
 	public int getHandle() {
@@ -78,6 +75,14 @@ public class Sprite {
 	
 	public Vector2f getPivot() {
 		return pivot;
+	}
+	
+	public void setLength(float length) {
+		this.length = length;
+		
+		// Reset time back to 0 to prevent bugs in update()
+		time = 0;
+		animation = length > 0.0001f;
 	}
 	
 	public void setCurrentFrame(int frame) {
@@ -147,5 +152,15 @@ public class Sprite {
 	
 	public boolean isAnimation() {
 		return animation;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder sb = new StringBuilder();
+		sb.append("Num Frames: " + numFrames + '\n');
+		sb.append("Sheet size: " + texture.getWidth() + " x " + texture.getHeight() + '\n');
+		sb.append("Frame size: " + width + " x " + height + '\n');
+		
+		return sb.toString();
 	}
 }

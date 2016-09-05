@@ -8,6 +8,9 @@ import java.util.concurrent.ArrayBlockingQueue;
 import graphics.nim.volterra.util.Vector2f;
 
 public class Input {
+	public static final int MOUSE_LEFT = 0;
+	public static final int MOUSE_RIGHT = 1;
+	
 	public static final int KEY_SPACE     = 32;
 	public static final int KEY_PERIOD    = 46;
 	public static final int KEY_COMMA     = 44;

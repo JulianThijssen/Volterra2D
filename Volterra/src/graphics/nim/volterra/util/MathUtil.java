@@ -11,6 +11,16 @@ public class MathUtil {
 		return f;
 	}
 	
+	public static int clamp(int i, int low, int high) {
+		if (i < low) {
+			return low;
+		}
+		else if (i > high) {
+			return high;
+		}
+		return i;
+	}
+	
 	public static float abs(float f) {
 		if (f < 0) {
 			return f * -1;

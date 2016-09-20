@@ -37,13 +37,17 @@ public class Matrix4f {
 		return buffer;
 	}
 	
-	public void translate(Vector3f v) {
-		array[12] += array[0] * v.x + array[4] * v.y + array[8] * v.z;
-		array[13] += array[1] * v.x + array[5] * v.y + array[9] * v.z;
-		array[14] += array[2] * v.x + array[6] * v.y + array[10] * v.z;
-		array[15] += array[3] * v.x + array[7] * v.y + array[11] * v.z;
+	public void translate(float x, float y, float z) {
+		array[12] += array[0] * x + array[4] * y + array[8] * z;
+		array[13] += array[1] * x + array[5] * y + array[9] * z;
+		array[14] += array[2] * x + array[6] * y + array[10] * z;
+		array[15] += array[3] * x + array[7] * y + array[11] * z;
 	}
 
+	public void translate(Vector3f v) {
+		translate(v.x, v.y, v.z);
+	}
+	
 	public void rotate(float angle, float x, float y, float z) {
 		float c = (float) Math.cos(angle * Math.PI / 180);
 		float s = (float) Math.sin(angle * Math.PI / 180);
@@ -76,25 +80,33 @@ public class Matrix4f {
 		array[11] = f11;
 	}
 	
+	public void rotate(float pitch, float yaw, float roll) {
+		rotate(pitch, 1, 0, 0);
+		rotate(yaw,   0, 1, 0);
+		rotate(roll,  0, 0, 1);
+	}
+	
 	public void rotate(Vector3f euler) {
-		rotate(euler.x, 1, 0, 0);
-		rotate(euler.y, 0, 1, 0);
-		rotate(euler.z, 0, 0, 1);
+		rotate(euler.x, euler.y, euler.z);
 	}
 
+	public void scale(float x, float y, float z) {
+		array[0] = array[0] * x;
+		array[1] = array[1] * x;
+		array[2] = array[2] * x;
+		array[3] = array[3] * x;
+		array[4] = array[4] * y;
+		array[5] = array[5] * y;
+		array[6] = array[6] * y;
+		array[7] = array[7] * y;
+		array[8] = array[8] * z;
+		array[9] = array[9] * z;
+		array[10] = array[10] * z;
+		array[11] = array[11] * z;
+	}
+	
 	public void scale(Vector3f scale) {
-		array[0] = array[0] * scale.x;
-		array[1] = array[1] * scale.x;
-		array[2] = array[2] * scale.x;
-		array[3] = array[3] * scale.x;
-		array[4] = array[4] * scale.y;
-		array[5] = array[5] * scale.y;
-		array[6] = array[6] * scale.y;
-		array[7] = array[7] * scale.y;
-		array[8] = array[8] * scale.z;
-		array[9] = array[9] * scale.z;
-		array[10] = array[10] * scale.z;
-		array[11] = array[11] * scale.z;
+		scale(scale.x, scale.y, scale.z);
 	}
 	
 	public Vector3f transform(Vector3f v, float w) {

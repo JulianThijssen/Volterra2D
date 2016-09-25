@@ -3,7 +3,7 @@ package graphics.nim.volterra;
 import static org.lwjgl.opengl.GL11.*;
 
 public class Texture {
-	private int handle;
+	protected int handle;
 	private int width;
 	private int height;
 	
@@ -19,10 +19,6 @@ public class Texture {
 	
 	public void unbind() {
 		glBindTexture(GL_TEXTURE_2D, 0);
-	}
-	
-	public int getHandle() {
-		return handle;
 	}
 	
 	public int getWidth() {

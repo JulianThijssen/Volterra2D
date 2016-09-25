@@ -64,7 +64,7 @@ public class FrameBuffer {
 	
 	public void addColorTexture(int internal, int format, int type) {
 		Texture colorTex = TextureLoader.createTex(width, height, internal, format, type, null);
-		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + colorTextures.size(), colorTex.getHandle(), 0);
+		glFramebufferTexture(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + colorTextures.size(), colorTex.handle, 0);
 		colorTextures.add(colorTex);
 	}
 	

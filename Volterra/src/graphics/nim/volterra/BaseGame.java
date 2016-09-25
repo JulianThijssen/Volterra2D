@@ -29,6 +29,7 @@ public abstract class BaseGame {
 		canvas = new Canvas();
 		skipTime = (long) 1e9 / frameRate;
 		
+		Resources.addShape("Quad", ShapeLoader.getQuad());
 		load();
 		tick();
 	}

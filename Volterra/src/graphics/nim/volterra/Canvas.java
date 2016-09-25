@@ -182,6 +182,10 @@ public class Canvas {
 		glViewport(0, 0, Window.width, Window.height);
 	}
 	
+	public void setViewport(int left, int right, int w, int h) {
+		glViewport(left, right, w, h);
+	}
+	
 	/**
 	 * Sets the camera with which the scene is rendered.
 	 * Internally this method sets the viewMatrix member variable.
@@ -211,7 +215,7 @@ public class Canvas {
 	 */
 	public void bindTexture(int slot, Texture texture) {
 		glActiveTexture(GL_TEXTURE0 + slot);
-		glBindTexture(GL_TEXTURE_2D, texture.getHandle());
+		texture.bind();
 	}
 	
 	/**
@@ -264,7 +268,7 @@ public class Canvas {
 		shader.uniform4f("color", color.r, color.g, color.b, color.a);
 		
 		modelMatrix.setIdentity();
-		modelMatrix.translate(new Vector3f(x, y, d));
+		modelMatrix.translate(new Vector3f(x, y, -d / Z_RANGE));
 		modelMatrix.scale(new Vector3f(w, h, 1));
 		shader.uniformMatrix4f("modelMatrix", modelMatrix);
 		
@@ -280,15 +284,15 @@ public class Canvas {
 	 * @param depth The depth of the position of the texture.
 	 * @param image The texture to be rendered.
 	 */
-	public void drawImage(float x, float y, float depth, Texture image) {
-		glBindTexture(GL_TEXTURE_2D, image.getHandle());
+	public void drawImage(float x, float y, float depth, Texture texture) {
+		texture.bind();
 		shader.uniform1i("hasTexture", 1);
 		shader.uniform1i("sprite", 0);
 		shader.uniform4f("color", color.r, color.g, color.b, color.a);
 		
 		modelMatrix.setIdentity();
 		modelMatrix.translate(new Vector3f(x, y, -depth / Z_RANGE));
-		modelMatrix.scale(new Vector3f(image.getWidth(), image.getHeight(), 1));
+		modelMatrix.scale(new Vector3f(texture.getWidth(), texture.getHeight(), 1));
 		shader.uniformMatrix4f("modelMatrix", modelMatrix);
 		
 		glBindVertexArray(quad);
@@ -304,27 +308,25 @@ public class Canvas {
 	 * @param sprite The sprite to be rendered.
 	 */
 	public void drawImage(float x, float y, float depth, Sprite sprite) {
-		glBindTexture(GL_TEXTURE_2D, sprite.getTextureHandle());
+		sprite.getTexture().bind();
 		shader.uniform1i("hasTexture", 1);
 		shader.uniform1i("sprite", 0);
 		shader.uniform4f("color", color.r, color.g, color.b, color.a);
 		
-		if (sprite.isAnimation()) {
-			sprite.update();
-		}
+		sprite.update();
 		
 		Vector2f pivot = sprite.getPivot();
 		modelMatrix.setIdentity();
-		modelMatrix.translate(new Vector3f(x - pivot.x, y - pivot.y, -depth / Z_RANGE));
-		modelMatrix.rotate(new Vector3f(0, 0, sprite.rotation));
+		modelMatrix.translate(x-pivot.x, y-pivot.y, -depth/Z_RANGE);
+		modelMatrix.rotate(0, 0, sprite.getRotation());
 		if (!sprite.isFlipped()) {
-			modelMatrix.scale(new Vector3f(sprite.getWidth(), sprite.getHeight(), 1));
+			modelMatrix.scale(sprite.getWidth(), sprite.getHeight(), 1);
 		} else {
-			modelMatrix.scale(new Vector3f(-sprite.getWidth(), sprite.getHeight(), 1));
+			modelMatrix.scale(-sprite.getWidth(), sprite.getHeight(), 1);
 		}
 		shader.uniformMatrix4f("modelMatrix", modelMatrix);
 		
-		glBindVertexArray(sprite.getHandle());
+		glBindVertexArray(sprite.getQuad());
 		glDrawArrays(GL_TRIANGLES, 0, 6);
 	}
 	
@@ -345,13 +347,13 @@ public class Canvas {
 			
 			Letter letter = font.getHandle(c);
 			
-			glBindTexture(GL_TEXTURE_2D, font.spriteSheet.getHandle());
+			font.texture.bind();
 			shader.uniform1i("hasTexture", 1);
 			shader.uniform1i("sprite", 0);
 			shader.uniform4f("color", color.r, color.g, color.b, color.a);
 			
 			modelMatrix.setIdentity();
-			modelMatrix.translate(new Vector3f(x + stride, y, depth));
+			modelMatrix.translate(new Vector3f(x + stride, y, -depth / Z_RANGE));
 			modelMatrix.scale(new Vector3f(letter.width * scale, letter.height * scale, 1));
 			shader.uniformMatrix4f("modelMatrix", modelMatrix);
 			

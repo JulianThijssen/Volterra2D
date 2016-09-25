@@ -5,7 +5,7 @@ import graphics.nim.volterra.font.Letter;
 import java.util.HashMap;
 
 public class Font {
-	public Texture spriteSheet;
+	public Texture texture;
 	public HashMap<Character, Letter> letters = new HashMap<Character, Letter>();
 	
 	public Font() {

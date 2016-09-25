@@ -7,6 +7,9 @@ public class Camera {
 	private float rotation = 0;
 	private Vector2f zoom = new Vector2f(1, 1);
 	
+	/**
+	 * Class constructor.
+	 */
 	public Camera() {
 		
 	}

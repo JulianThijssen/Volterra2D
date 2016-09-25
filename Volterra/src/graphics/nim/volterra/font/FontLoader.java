@@ -130,7 +130,7 @@ public class FontLoader {
 			}
 		}
 		
-		vFont.spriteSheet = TextureLoader.load(fontTexture);
+		vFont.texture = TextureLoader.load(fontTexture);
 		
 		return vFont;
 	}

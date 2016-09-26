@@ -2,7 +2,8 @@ package graphics.nim.volterra.font;
 
 import graphics.nim.volterra.Font;
 import graphics.nim.volterra.ShapeLoader;
-import graphics.nim.volterra.TextureLoader;
+import graphics.nim.volterra.texture.Sampling;
+import graphics.nim.volterra.texture.TextureLoader;
 import graphics.nim.volterra.util.Log;
 
 import java.awt.Color;
@@ -130,7 +131,11 @@ public class FontLoader {
 			}
 		}
 		
-		vFont.texture = TextureLoader.load(fontTexture);
+		if (antialias) {
+			vFont.texture = TextureLoader.load(fontTexture, Sampling.BILINEAR);
+		} else {
+			vFont.texture = TextureLoader.load(fontTexture, Sampling.POINT);
+		}
 		
 		return vFont;
 	}

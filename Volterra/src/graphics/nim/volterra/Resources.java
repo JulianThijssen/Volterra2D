@@ -1,6 +1,9 @@
 package graphics.nim.volterra;
 
 import graphics.nim.volterra.font.FontLoader;
+import graphics.nim.volterra.texture.Sampling;
+import graphics.nim.volterra.texture.Texture;
+import graphics.nim.volterra.texture.TextureLoader;
 import graphics.nim.volterra.util.Log;
 
 import java.util.HashMap;
@@ -17,14 +20,13 @@ public class Resources {
 		shaders.put(name, shader);
 	}
 	
-	public static void addTexture(String name, String path) {
-		Texture texture = TextureLoader.load(path);
+	public static void addTexture(String name, String path, Sampling sampling) {
+		Texture texture = TextureLoader.load(path, sampling);
 		textures.put(name, texture);
 	}
 	
-	public static void addSpriteSheet(String name, String path, int frameWidth, int frameHeight) {
-		addTexture(name, path); // XXX Should this be added to textures? Could cause conflicts
-		Texture texture = getTexture(name);
+	public static void addSpriteSheet(String name, String path, int frameWidth, int frameHeight, Sampling sampling) {
+		Texture texture = TextureLoader.load(path, sampling);
 		
 		SpriteSheet spriteSheet = new SpriteSheet(texture, frameWidth, frameHeight);
 		spriteSheets.put(name, spriteSheet);

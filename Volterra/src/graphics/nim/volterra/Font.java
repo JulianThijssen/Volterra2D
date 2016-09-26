@@ -1,6 +1,7 @@
 package graphics.nim.volterra;
 
 import graphics.nim.volterra.font.Letter;
+import graphics.nim.volterra.texture.Texture;
 
 import java.util.HashMap;
 

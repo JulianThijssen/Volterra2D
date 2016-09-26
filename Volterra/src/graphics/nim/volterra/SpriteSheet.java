@@ -1,5 +1,6 @@
 package graphics.nim.volterra;
 
+import graphics.nim.volterra.texture.Texture;
 import graphics.nim.volterra.util.Log;
 
 public class SpriteSheet {

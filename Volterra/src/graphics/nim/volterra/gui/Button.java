@@ -1,6 +1,6 @@
 package graphics.nim.volterra.gui;
 
-import graphics.nim.volterra.Texture;
+import graphics.nim.volterra.texture.Texture;
 import graphics.nim.volterra.util.Vector2f;
 
 public class Button {

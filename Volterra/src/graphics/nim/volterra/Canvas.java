@@ -16,6 +16,7 @@ import org.lwjgl.BufferUtils;
 
 import graphics.nim.volterra.font.FontLoader;
 import graphics.nim.volterra.font.Letter;
+import graphics.nim.volterra.texture.Texture;
 import graphics.nim.volterra.util.Color;
 import graphics.nim.volterra.util.Matrix4f;
 import graphics.nim.volterra.util.Vector2f;

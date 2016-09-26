@@ -72,10 +72,7 @@ public class Window {
 	}
 	
 	public boolean isClosed() {
-		if (glfwWindowShouldClose(window) == GL_FALSE) {
-			return false;
-		}
-		return true;
+		return glfwWindowShouldClose(window) == GL_TRUE;
 	}
 	
 	public void close() {

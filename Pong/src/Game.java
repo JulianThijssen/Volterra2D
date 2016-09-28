@@ -6,15 +6,27 @@ import graphics.nim.volterra.Resources;
 import graphics.nim.volterra.Sprite;
 import graphics.nim.volterra.Window;
 import graphics.nim.volterra.input.Input;
+import graphics.nim.volterra.texture.Sampling;
 import graphics.nim.volterra.util.MathUtil;
 import graphics.nim.volterra.util.Vector2f;
 
 public class Game extends GameState {
-	public static final float BALL_SPEED = 2;
-	public static final float PADDLE_SPEED = 3;
+	public static final int PLAYERS = 2;
+	
+	public static final float BALL_SPEED = 2.0f;
+	public static final float PADDLE_SPEED = 3.0f;
 	public static final float SPEED_UP = 1.3f;
 	
-	private Paddle[] paddles = new Paddle[2];
+	public static final int PADDING = 16;
+	
+	private final int[] CONTROLS = {
+		Input.KEY_W,
+		Input.KEY_S,
+		Input.KEY_I,
+		Input.KEY_K
+	};
+	
+	private Paddle[] paddles = new Paddle[PLAYERS];
 	private Ball ball;
 	
 	private int playerOneScore = 0;
@@ -28,11 +40,11 @@ public class Game extends GameState {
 	
 	@Override
 	public void init() {
-		Resources.addTexture("Paddle", "res/Paddle.png");
-		Resources.addTexture("BallSheet", "res/BallSheet.png");
+		Resources.addSpriteSheet("Paddle", "res/Paddle.png", 16, 64, Sampling.POINT);
+		Resources.addSpriteSheet("BallSheet", "res/BallSheet.png", 16, 16, Sampling.POINT);
 
-		paddles[0] = EntityFactory.createPaddle(-184, 0);
-		paddles[1] = EntityFactory.createPaddle(184, 0);
+		paddles[0] = EntityFactory.createPaddle(-Window.width/2 + PADDING, 0);
+		paddles[1] = EntityFactory.createPaddle(Window.width/2 - PADDING, 0);
 		ball = EntityFactory.createBall(0, 0);
 		
 		reset();
@@ -41,7 +53,9 @@ public class Game extends GameState {
 	public void reset() {
 		ball.position.set(0, 0);
 		
-		ball.velocity.set((float) Math.random() + 1, (float) Math.random() * 2 - 1);
+		double rand = Math.random() - 0.5;
+		int direction = rand > 0 ? 1 : -1;
+		ball.velocity.set(direction, (float) Math.random() * 2 - 1);
 		ball.velocity.normalise().scale(BALL_SPEED);
 	}
 	
@@ -77,51 +91,44 @@ public class Game extends GameState {
 		}
 		
 		// Wall Collision
-		if (!MathUtil.inRange(ball.position.y, -200, 200)) {
+		if (!MathUtil.inRange(ball.position.y, -Window.height/2, Window.height/2)) {
 			ball.velocity.y *= -1;
 		}
 
 		// Win Condition
-		if (ball.position.x >= 200) {
+		if (ball.position.x >= Window.width) {
 			playerOneScore += 1;
 			reset();
 		}
-		if (ball.position.x <= -200) {
+		if (ball.position.x <= -Window.width) {
 			playerTwoScore += 1;
 			reset();
 		}
 	}
 	
 	public void movePaddles() {
-		Vector2f p0 = paddles[0].position;
-		Vector2f v0 = paddles[0].velocity;
-		Vector2f p1 = paddles[1].position;
-		Vector2f v1 = paddles[1].velocity;
+		float upperBound = Window.height/2 - PADDING;
+		float lowerBound = -Window.height/2 + PADDING;
 		
-		// Paddle moving
-		if (Input.isKeyPressed(Input.KEY_W) && p0.y < 184) {
-			v0.y = PADDLE_SPEED;
+		for (int i = 0; i < paddles.length; i++) {
+			Vector2f p = paddles[i].position;
+			Vector2f v = paddles[i].velocity;
+			
+			boolean upPressed = Input.isKeyPressed(CONTROLS[i*2+0]);
+			boolean downPressed = Input.isKeyPressed(CONTROLS[i*2+1]);
+			
+			// Paddle moving
+			if (upPressed && p.y < upperBound) {
+				v.y = PADDLE_SPEED;
+			}
+			else if (downPressed && p.y > lowerBound) {
+				v.y = -PADDLE_SPEED;
+			}
+			else {
+				v.y = 0;
+			}
+			p.add(v);
 		}
-		else if (Input.isKeyPressed(Input.KEY_S) && p0.y > -184) {
-			v0.y = -PADDLE_SPEED;
-		}
-		else {
-			v0.y = 0;
-		}
-		
-		p0.add(new Vector2f(v0.x, v0.y));
-		
-		if (Input.isKeyPressed(Input.KEY_I) && p1.y < 184) {
-			v1.y = PADDLE_SPEED;
-		}
-		else if (Input.isKeyPressed(Input.KEY_K) && p1.y > -184) {
-			v1.y = -PADDLE_SPEED;
-		}
-		else {
-			v1.y = 0;
-		}
-		
-		p1.add(new Vector2f(v1.x, v1.y));
 	}
 	
 	@Override
@@ -130,12 +137,12 @@ public class Game extends GameState {
 		canvas.setCamera(mainCamera);
 		
 		canvas.clear();
-		canvas.setColor(0, 1, 0);
+		canvas.setColor(0, 1, 0, 1);
 		canvas.drawImage(paddles[0].position.x, paddles[0].position.y, 0, paddles[0].sprite);
-		canvas.setColor(1, 0, 0);
+		canvas.setColor(1, 0, 0, 1);
 		canvas.drawImage(paddles[1].position.x, paddles[1].position.y, 0, paddles[1].sprite);
 		
-		canvas.setColor(1, 1, 1);
+		canvas.setColor(1, 1, 1, 1);
 		canvas.drawImage(ball.position.x, ball.position.y, 0, ball.sprite);
 
 		canvas.setFont(Resources.getFont("NES"));
@@ -152,7 +159,6 @@ public class Game extends GameState {
 
 	@Override
 	public void onStateLeave() {
-		// TODO Auto-generated method stub
 		
 	}
 }

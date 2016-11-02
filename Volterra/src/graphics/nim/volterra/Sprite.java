@@ -92,8 +92,11 @@ public class Sprite {
 		if (!motile) {
 			return;
 		}
-		final int numFrames = spriteSheet.getNumFrames();
-		animation.update();
-		setCurrentFrame((int) (animation.progress() * numFrames));
+		
+		if (animation.isPlaying()) {
+			final int numFrames = spriteSheet.getNumFrames();
+			animation.update();
+			setCurrentFrame((int) (animation.progress() * numFrames));
+		}
 	}
 }

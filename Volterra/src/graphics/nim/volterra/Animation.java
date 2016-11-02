@@ -52,7 +52,7 @@ public class Animation {
 	}
 	
 	public void update() {
-		if (playing) {
+		if (playing) { // FIXME This check is currently double with the one in Sprite
 			time += Time.renderTime;
 			
 			if (time > length) {

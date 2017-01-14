@@ -42,6 +42,10 @@ public class Vector2f {
 		return this;
 	}
 	
+	public float sqrMagnitude() {
+		return x * x + y * y;
+	}
+	
 	public float length() {
 		return (float) Math.sqrt(x * x + y * y);
 	}

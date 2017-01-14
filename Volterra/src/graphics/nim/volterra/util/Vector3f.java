@@ -52,6 +52,10 @@ public class Vector3f {
 		return this;
 	}
 	
+	public float sqrMagnitude() {
+		return x * x + y * y + z * z;
+	}
+	
 	public float length() {
 		return (float) Math.sqrt(x * x + y * y + z * z);
 	}

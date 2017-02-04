@@ -9,7 +9,7 @@ public abstract class BaseGame {
 	private long updateTime = 0;
 	private long renderTime = 0;
 	
-	private StateMachine gameState = new StateMachine();
+	private StateMachine gameStateMachine = new StateMachine();
 	
 	/* Window */
 	private String title = "Volterra Game";
@@ -35,7 +35,7 @@ public abstract class BaseGame {
 	}
 	
 	private void tick() {
-		for (State s: gameState.getStates()) {
+		for (State s: gameStateMachine.getStates()) {
 			GameState state = (GameState) s;
 			state.init();
 		}
@@ -91,15 +91,17 @@ public abstract class BaseGame {
 	}
 	
 	public void addGameState(State state) {
-		gameState.addState(state);
+		gameStateMachine.addState(state);
 	}
 	
 	public State getCurrentState() {
-		return gameState.getState();
+		return gameStateMachine.getState();
 	}
 	
 	public void setState(int state) {
-		gameState.setState(state);
+		((GameState) getCurrentState()).onStateLeave();
+		gameStateMachine.setState(state);
+		((GameState) getCurrentState()).onStateEnter();
 	}
 	
 	public void takeScreenshot() {

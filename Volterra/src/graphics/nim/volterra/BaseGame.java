@@ -77,6 +77,7 @@ public abstract class BaseGame {
 	
 	public void setTitle(String title) {
 		this.title = title;
+		window.setTitle(title);
 	}
 	
 	public void setResolution(int width, int height) {

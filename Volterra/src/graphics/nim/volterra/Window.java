@@ -55,6 +55,7 @@ public class Window {
 
 	public void setTitle(String title) {
 		Window.title = title;
+		glfwSetWindowTitle(window, title);
 	}
 	
 	public void setSize(int width, int height) {

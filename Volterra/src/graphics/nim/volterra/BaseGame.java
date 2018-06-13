@@ -88,6 +88,7 @@ public abstract class BaseGame {
 	public void setTargetFrameRate(int rate) {
 		if (rate > 0) {
 			frameRate = rate;
+			skipTime = (long) 1e9 / frameRate;
 		}
 	}
 	

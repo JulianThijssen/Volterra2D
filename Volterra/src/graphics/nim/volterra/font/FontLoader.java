@@ -50,85 +50,85 @@ public class FontLoader {
 	private static Font loadFont(java.awt.Font font, float size, boolean antialias) {
 		List<LetterImage> charImages = new ArrayList<LetterImage>();
 		
-		int sum = 0;
-		int xmax = 0;
-		int ymax = 0;
+		int alphabetWidth = 0;
+		int wMax = 0;
+		int hMax = 0;
 		
+		// Get the width and height of the character
+		BufferedImage tempfontImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D tg = (Graphics2D) tempfontImage.getGraphics();
+		if (antialias) {
+			tg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		}
+		tg.setFont(font);
+		FontMetrics fontMetrics = tg.getFontMetrics();
+		
+		// For every character in our alphabet
 		for (int i = 0; i < alphabet.length(); i++) {
 			char c = alphabet.charAt(i);
 			
-			// Get the width and height of the character
-			BufferedImage tempfontImage = new BufferedImage(1, 1, BufferedImage.TYPE_INT_ARGB);
-			Graphics2D tg = (Graphics2D) tempfontImage.getGraphics();
-			if (antialias) {
-				tg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-			}
-			tg.setFont(font);
-			FontMetrics fontMetrics = tg.getFontMetrics();
+			// Get the width and height of the character in this font
 			int charwidth = fontMetrics.charWidth(c);
 
 			if (charwidth <= 0) {
 				charwidth = 1;
 			}
 			int charheight = fontMetrics.getHeight();
-			
+
 			// Draw the character on a small buffered image
-			BufferedImage fontImage;
-			fontImage = new BufferedImage(charwidth, charheight, BufferedImage.TYPE_INT_ARGB);
+			BufferedImage fontImage = new BufferedImage(charwidth, charheight, BufferedImage.TYPE_INT_ARGB);
 			Graphics2D bg = (Graphics2D) fontImage.getGraphics();
 			if (antialias) {
 				bg.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 			}
 			
 			bg.setFont(font);
-//			bg.setColor(new Color((float) Math.random(), (float) Math.random(), (float) Math.random()));
-//			bg.fillRect(0, 0, charwidth, charheight);
 			bg.setColor(Color.WHITE);
-
 			bg.drawString(String.valueOf(c), 0, 0 + fontMetrics.getAscent());
-			
+			System.out.println(c + " " + charwidth + " " + charheight);
+			// Save the small buffered image in a LetterImage with the corresponding character and size
 			LetterImage li = new LetterImage(c, fontImage, charwidth, charheight);
 			charImages.add(li);
-			sum += charwidth;
-			if (charwidth > xmax) {
-				xmax = charwidth;
+			
+			// Calculate the total width of our alphabet
+			alphabetWidth += charwidth;
+			// Calculate the maximum width and height of a character
+			if (charwidth > wMax) {
+				wMax = charwidth;
 			}
-			if (charheight > ymax) {
-				ymax = charheight;
+			if (charheight > hMax) {
+				hMax = charheight;
 			}
 		}
 		
-		int width = sum / 6 + xmax;
-		int height = ymax * 6;
+		// Calculate the optimal size of our font texture
+		int width = (alphabetWidth / 6) + wMax;
+		int height = hMax * 6;
 		
+		// Draw the letters onto our font texture
 		BufferedImage fontTexture = new BufferedImage(width, height, BufferedImage.TYPE_4BYTE_ABGR);
 		Graphics2D ftg = fontTexture.createGraphics();
-//		ftg.setColor(Color.GREEN);
-//		ftg.fillRect(0, 0, width, height);
-//		ftg.setColor(Color.ORANGE);
-//		ftg.fillRect(0, 0, 10, height);
-//		ftg.setColor(Color.ORANGE);
-//		ftg.fillRect(0, 0, width, 10);
-		
+
 		Font vFont = new Font();
 
 		int x = 0, y = 0;
 		for (int i = 0; i < charImages.size(); i++) {
 			LetterImage li = charImages.get(i);
-			float x1 = (float) x / width;
-			float y1 = (float) y / height;
-			float x2 = x1 + ((float) li.width / width);
-			float y2 = y1 + ((float) li.height / height);
-			int vao = ShapeLoader.getSubQuad(x1, 1-y2, x2, 1-y1); // FIXME what a mess of inversions
+			if (x + li.width > width) {
+				x = 0;
+				y += li.height;
+			}
+			
+			float u1 = (float) x / width;
+			float u2 = u1 + ((float) li.width / width);
+			float v1 = 1 - (float) y / height; // Flipped because we want (0, 0) to be bottom-left
+			float v2 = v1 - ((float) li.height / height);
+			int vao = ShapeLoader.getFontQuad(u1, v2, u2, v1); // V2 before V1, because it is closer to 0
 			Letter letter = new Letter(vao, li.width, li.height);
 			vFont.letters.put(li.c, letter);
 			
 			ftg.drawImage(li.image, x, y, null);
 			x += li.width;
-			if (x > width - li.width) {
-				x = 0;
-				y += li.height;
-			}
 		}
 		
 		if (antialias) {

@@ -25,6 +25,16 @@ public class ShapeLoader {
 	public static int getSubQuad(float x1, float y1, float x2, float y2) {
 		int[] elements = {0, 1, 2, 2, 1, 3};
 		float[] vertices = {-0.5f, -0.5f, 0, 0.5f, -0.5f, 0, -0.5f, 0.5f, 0, 0.5f, 0.5f, 0};
+		//float[] vertices = {0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0};
+		float[] texCoords = {x1, y1, x2, y1, x1, y2, x2, y2};
+		
+		return uploadData(vertices, texCoords, elements);
+	}
+	
+	public static int getFontQuad(float x1, float y1, float x2, float y2) {
+		int[] elements = {0, 1, 2, 2, 1, 3};
+		float[] vertices = {0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0};
+		//float[] vertices = {0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 1, 0};
 		float[] texCoords = {x1, y1, x2, y1, x1, y2, x2, y2};
 		
 		return uploadData(vertices, texCoords, elements);
